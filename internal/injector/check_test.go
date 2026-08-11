@@ -16,7 +16,7 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/DataDog/orchestrion/internal/injector/parse"
+	"github.com/GuanceCloud/orchestrion/internal/injector/parse"
 	"github.com/stretchr/testify/require"
 )
 

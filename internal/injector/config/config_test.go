@@ -61,17 +61,17 @@ func TestHasConfig(t *testing.T) {
 			t.Parallel()
 
 			pkgRoot := t.TempDir()
-			runGo(t, pkgRoot, "mod", "init", "github.com/DataDog/orchestrion/config_test")
+			runGo(t, pkgRoot, "mod", "init", "github.com/GuanceCloud/orchestrion/config_test")
 			require.NoError(t, os.WriteFile(filepath.Join(pkgRoot, FilenameOrchestrionToolGo), []byte(`
 				//go:build tools
 				package tools
-				import _ "github.com/DataDog/orchestrion"
+				import _ "github.com/GuanceCloud/orchestrion"
 			`), 0o644))
-			runGo(t, pkgRoot, "mod", "edit", "-replace", "github.com/DataDog/orchestrion="+repoRoot)
+			runGo(t, pkgRoot, "mod", "edit", "-replace", "github.com/GuanceCloud/orchestrion="+repoRoot)
 			runGo(t, pkgRoot, "mod", "tidy")
 
 			pkg := &packages.Package{
-				PkgPath: "github.com/DataDog/orchestrion/config_test",
+				PkgPath: "github.com/GuanceCloud/orchestrion/config_test",
 				GoFiles: []string{filepath.Join(pkgRoot, FilenameOrchestrionToolGo)},
 			}
 			hasCfg, err := HasConfig(context.Background(), nil, pkg, true)
@@ -83,11 +83,11 @@ func TestHasConfig(t *testing.T) {
 			t.Parallel()
 
 			pkgRoot := t.TempDir()
-			runGo(t, pkgRoot, "mod", "init", "github.com/DataDog/orchestrion/config_test")
+			runGo(t, pkgRoot, "mod", "init", "github.com/GuanceCloud/orchestrion/config_test")
 			require.NoError(t, os.WriteFile(filepath.Join(pkgRoot, FilenameOrchestrionYML), []byte("meta: {name: name, description: description}\naspects: [{ id: ID, join-point: { package-name: main }, advice: [add-blank-import: unsafe] }]"), 0o644))
 
 			pkg := &packages.Package{
-				PkgPath: "github.com/DataDog/orchestrion/config_test",
+				PkgPath: "github.com/GuanceCloud/orchestrion/config_test",
 				GoFiles: []string{filepath.Join(pkgRoot, "main.go")},
 			}
 			hasCfg, err := HasConfig(context.Background(), nil, pkg, true)
@@ -99,11 +99,11 @@ func TestHasConfig(t *testing.T) {
 			t.Parallel()
 
 			pkgRoot := t.TempDir()
-			runGo(t, pkgRoot, "mod", "init", "github.com/DataDog/orchestrion/config_test")
+			runGo(t, pkgRoot, "mod", "init", "github.com/GuanceCloud/orchestrion/config_test")
 			require.NoError(t, os.WriteFile(filepath.Join(pkgRoot, FilenameOrchestrionToolGo), []byte(`
 				//go:build tools
 				package tools
-				import _ "github.com/DataDog/orchestrion/config_test/inner"
+				import _ "github.com/GuanceCloud/orchestrion/config_test/inner"
 			`), 0o644))
 			require.NoError(t, os.Mkdir(filepath.Join(pkgRoot, "inner"), 0o755))
 			require.NoError(t, os.WriteFile(filepath.Join(pkgRoot, "inner", "inner.go"), []byte(`package inner`), 0o644))
@@ -111,7 +111,7 @@ func TestHasConfig(t *testing.T) {
 			require.NoError(t, os.WriteFile(filepath.Join(pkgRoot, FilenameOrchestrionYML), []byte("meta: {name: name, description: description}\naspects: [{ id: ID, join-point: { package-name: main }, advice: [add-blank-import: unsafe] }]"), 0o644))
 
 			pkg := &packages.Package{
-				PkgPath: "github.com/DataDog/orchestrion/config_test",
+				PkgPath: "github.com/GuanceCloud/orchestrion/config_test",
 				GoFiles: []string{filepath.Join(pkgRoot, FilenameOrchestrionToolGo)},
 			}
 			hasCfg, err := HasConfig(context.Background(), nil, pkg, true)
@@ -123,11 +123,11 @@ func TestHasConfig(t *testing.T) {
 			t.Parallel()
 
 			pkgRoot := t.TempDir()
-			runGo(t, pkgRoot, "mod", "init", "github.com/DataDog/orchestrion/config_test")
+			runGo(t, pkgRoot, "mod", "init", "github.com/GuanceCloud/orchestrion/config_test")
 			require.NoError(t, os.WriteFile(filepath.Join(pkgRoot, FilenameOrchestrionToolGo), []byte(`
 				//go:build tools
 				package tools
-				import _ "github.com/DataDog/orchestrion/config_test/inner"
+				import _ "github.com/GuanceCloud/orchestrion/config_test/inner"
 			`), 0o644))
 			require.NoError(t, os.Mkdir(filepath.Join(pkgRoot, "inner"), 0o755))
 			require.NoError(t, os.WriteFile(filepath.Join(pkgRoot, "inner", "inner.go"), []byte(`package inner`), 0o644))
@@ -136,7 +136,7 @@ func TestHasConfig(t *testing.T) {
 			require.NoError(t, os.WriteFile(filepath.Join(pkgRoot, FilenameOrchestrionYML), []byte("meta: {name: name, description: description}\naspects: [{ id: ID, join-point: { package-name: main }, advice: [add-blank-import: unsafe] }]"), 0o644))
 
 			pkg := &packages.Package{
-				PkgPath: "github.com/DataDog/orchestrion/config_test",
+				PkgPath: "github.com/GuanceCloud/orchestrion/config_test",
 				GoFiles: []string{filepath.Join(pkgRoot, FilenameOrchestrionToolGo)},
 			}
 			hasCfg, err := HasConfig(context.Background(), nil, pkg, false)
@@ -148,11 +148,11 @@ func TestHasConfig(t *testing.T) {
 			t.Parallel()
 
 			pkgRoot := t.TempDir()
-			runGo(t, pkgRoot, "mod", "init", "github.com/DataDog/orchestrion/config_test")
+			runGo(t, pkgRoot, "mod", "init", "github.com/GuanceCloud/orchestrion/config_test")
 			require.NoError(t, os.WriteFile(filepath.Join(pkgRoot, FilenameOrchestrionToolGo), []byte(`
 				//go:build tools
 				package tools
-				import _ "github.com/DataDog/orchestrion/config_test/inner"
+				import _ "github.com/GuanceCloud/orchestrion/config_test/inner"
 			`), 0o644))
 			require.NoError(t, os.Mkdir(filepath.Join(pkgRoot, "inner"), 0o755))
 			require.NoError(t, os.WriteFile(filepath.Join(pkgRoot, "inner", "inner.go"), []byte(`package inner`), 0o644))
@@ -161,7 +161,7 @@ func TestHasConfig(t *testing.T) {
 			require.NoError(t, os.WriteFile(filepath.Join(pkgRoot, FilenameOrchestrionYML), []byte("meta: {name: name, description: description}\naspects: [{ id: ID, join-point: { package-name: main }, advice: [add-blank-import: unsafe] }]"), 0o644))
 
 			pkg := &packages.Package{
-				PkgPath: "github.com/DataDog/orchestrion/config_test",
+				PkgPath: "github.com/GuanceCloud/orchestrion/config_test",
 				GoFiles: []string{filepath.Join(pkgRoot, FilenameOrchestrionToolGo)},
 			}
 			_, err := HasConfig(context.Background(), nil, pkg, true)
@@ -197,12 +197,12 @@ func TestLoad(t *testing.T) {
 
 	t.Run("recursive", func(t *testing.T) {
 		tmp := t.TempDir()
-		runGo(t, tmp, "mod", "init", "github.com/DataDog/orchestrion/config_test")
-		runGo(t, tmp, "mod", "edit", "-replace=github.com/DataDog/orchestrion="+repoRoot)
+		runGo(t, tmp, "mod", "init", "github.com/GuanceCloud/orchestrion/config_test")
+		runGo(t, tmp, "mod", "edit", "-replace=github.com/GuanceCloud/orchestrion="+repoRoot)
 		require.NoError(t, os.WriteFile(filepath.Join(tmp, FilenameOrchestrionToolGo), []byte(`
 			//go:build tools
 			package tools
-			import _ "github.com/DataDog/orchestrion/config_test/nested"
+			import _ "github.com/GuanceCloud/orchestrion/config_test/nested"
 		`), 0o644))
 		require.NoError(t, os.Mkdir(filepath.Join(tmp, "nested"), 0o755))
 		require.NoError(t, os.WriteFile(filepath.Join(tmp, "nested", "nested.go"), []byte(`package nested`), 0o644))
@@ -213,8 +213,8 @@ func TestLoad(t *testing.T) {
 			//go:build tools
 			package tools
 			import (
-				_ "github.com/DataDog/orchestrion"
-				_ "github.com/DataDog/orchestrion/config_test"
+				_ "github.com/GuanceCloud/orchestrion"
+				_ "github.com/GuanceCloud/orchestrion/config_test"
 			)
 		`), 0o644))
 		runGo(t, tmp, "mod", "tidy")

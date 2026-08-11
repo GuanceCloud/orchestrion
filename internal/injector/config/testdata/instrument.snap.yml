@@ -1,6 +1,6 @@
-pkgpath: github.com/DataDog/orchestrion/instrument
+pkgpath: github.com/GuanceCloud/orchestrion/instrument
 imports:
-  - pkgpath: github.com/DataDog/orchestrion
+  - pkgpath: github.com/GuanceCloud/orchestrion
     yaml:
       name: <built-in>
       aspects:
@@ -27,7 +27,7 @@ imports:
             - testify.suite.Run
       - pkgpath: gopkg.in/DataDog/dd-trace-go.v1/contrib/99designs/gqlgen
         imports:
-          - pkgpath: github.com/DataDog/dd-trace-go/contrib/99designs/gqlgen/v2
+          - pkgpath: github.com/GuanceCloud/dd-trace-go/contrib/99designs/gqlgen/v2
             yaml:
               name: orchestrion.yml
               aspects:
@@ -35,7 +35,7 @@ imports:
         yaml: null
       - pkgpath: gopkg.in/DataDog/dd-trace-go.v1/contrib/IBM/sarama.v1
         imports:
-          - pkgpath: github.com/DataDog/dd-trace-go/contrib/IBM/sarama/v2
+          - pkgpath: github.com/GuanceCloud/dd-trace-go/contrib/IBM/sarama/v2
             yaml:
               name: orchestrion.yml
               aspects:
@@ -45,7 +45,7 @@ imports:
         yaml: null
       - pkgpath: gopkg.in/DataDog/dd-trace-go.v1/contrib/Shopify/sarama
         imports:
-          - pkgpath: github.com/DataDog/dd-trace-go/contrib/Shopify/sarama/v2
+          - pkgpath: github.com/GuanceCloud/dd-trace-go/contrib/Shopify/sarama/v2
             yaml:
               name: orchestrion.yml
               aspects:
@@ -55,7 +55,7 @@ imports:
         yaml: null
       - pkgpath: gopkg.in/DataDog/dd-trace-go.v1/contrib/aws/aws-sdk-go-v2/aws
         imports:
-          - pkgpath: github.com/DataDog/dd-trace-go/contrib/aws/aws-sdk-go-v2/v2/aws
+          - pkgpath: github.com/GuanceCloud/dd-trace-go/contrib/aws/aws-sdk-go-v2/v2/aws
             yaml:
               name: orchestrion.yml
               aspects:
@@ -64,7 +64,7 @@ imports:
         yaml: null
       - pkgpath: gopkg.in/DataDog/dd-trace-go.v1/contrib/aws/aws-sdk-go/aws
         imports:
-          - pkgpath: github.com/DataDog/dd-trace-go/contrib/aws/aws-sdk-go/v2/aws
+          - pkgpath: github.com/GuanceCloud/dd-trace-go/contrib/aws/aws-sdk-go/v2/aws
             yaml:
               name: orchestrion.yml
               aspects:
@@ -72,7 +72,7 @@ imports:
         yaml: null
       - pkgpath: gopkg.in/DataDog/dd-trace-go.v1/contrib/cloud.google.com/go/pubsub.v1
         imports:
-          - pkgpath: github.com/DataDog/dd-trace-go/contrib/cloud.google.com/go/pubsub.v1/v2
+          - pkgpath: github.com/GuanceCloud/dd-trace-go/contrib/cloud.google.com/go/pubsub.v1/v2
             yaml:
               name: orchestrion.yml
               aspects:
@@ -83,7 +83,7 @@ imports:
         yaml: null
       - pkgpath: gopkg.in/DataDog/dd-trace-go.v1/contrib/confluentinc/confluent-kafka-go/kafka
         imports:
-          - pkgpath: github.com/DataDog/dd-trace-go/contrib/confluentinc/confluent-kafka-go/kafka/v2
+          - pkgpath: github.com/GuanceCloud/dd-trace-go/contrib/confluentinc/confluent-kafka-go/kafka/v2
             yaml:
               name: orchestrion.yml
               aspects:
@@ -103,7 +103,7 @@ imports:
         yaml: null
       - pkgpath: gopkg.in/DataDog/dd-trace-go.v1/contrib/confluentinc/confluent-kafka-go/kafka.v2
         imports:
-          - pkgpath: github.com/DataDog/dd-trace-go/contrib/confluentinc/confluent-kafka-go/kafka.v2/v2
+          - pkgpath: github.com/GuanceCloud/dd-trace-go/contrib/confluentinc/confluent-kafka-go/kafka.v2/v2
             yaml:
               name: orchestrion.yml
               aspects:
@@ -123,7 +123,7 @@ imports:
         yaml: null
       - pkgpath: gopkg.in/DataDog/dd-trace-go.v1/contrib/database/sql
         imports:
-          - pkgpath: github.com/DataDog/dd-trace-go/contrib/database/sql/v2
+          - pkgpath: github.com/GuanceCloud/dd-trace-go/contrib/database/sql/v2
             yaml:
               name: orchestrion.yml
               aspects:
@@ -133,7 +133,7 @@ imports:
         yaml: null
       - pkgpath: gopkg.in/DataDog/dd-trace-go.v1/contrib/elastic/go-elasticsearch.v6
         imports:
-          - pkgpath: github.com/DataDog/dd-trace-go/contrib/elastic/go-elasticsearch.v6/v2
+          - pkgpath: github.com/GuanceCloud/dd-trace-go/contrib/elastic/go-elasticsearch.v6/v2
             yaml:
               name: orchestrion.yml
               aspects:
@@ -146,7 +146,7 @@ imports:
         yaml: null
       - pkgpath: gopkg.in/DataDog/dd-trace-go.v1/contrib/gin-gonic/gin
         imports:
-          - pkgpath: github.com/DataDog/dd-trace-go/contrib/gin-gonic/gin/v2
+          - pkgpath: github.com/GuanceCloud/dd-trace-go/contrib/gin-gonic/gin/v2
             yaml:
               name: orchestrion.yml
               aspects:
@@ -154,7 +154,7 @@ imports:
         yaml: null
       - pkgpath: gopkg.in/DataDog/dd-trace-go.v1/contrib/go-chi/chi
         imports:
-          - pkgpath: github.com/DataDog/dd-trace-go/contrib/go-chi/chi/v2
+          - pkgpath: github.com/GuanceCloud/dd-trace-go/contrib/go-chi/chi/v2
             yaml:
               name: orchestrion.yml
               aspects:
@@ -162,7 +162,7 @@ imports:
         yaml: null
       - pkgpath: gopkg.in/DataDog/dd-trace-go.v1/contrib/go-chi/chi.v5
         imports:
-          - pkgpath: github.com/DataDog/dd-trace-go/contrib/go-chi/chi.v5/v2
+          - pkgpath: github.com/GuanceCloud/dd-trace-go/contrib/go-chi/chi.v5/v2
             yaml:
               name: orchestrion.yml
               aspects:
@@ -170,7 +170,7 @@ imports:
         yaml: null
       - pkgpath: gopkg.in/DataDog/dd-trace-go.v1/contrib/go-redis/redis
         imports:
-          - pkgpath: github.com/DataDog/dd-trace-go/contrib/go-redis/redis/v2
+          - pkgpath: github.com/GuanceCloud/dd-trace-go/contrib/go-redis/redis/v2
             yaml:
               name: orchestrion.yml
               aspects:
@@ -178,7 +178,7 @@ imports:
         yaml: null
       - pkgpath: gopkg.in/DataDog/dd-trace-go.v1/contrib/go-redis/redis.v7
         imports:
-          - pkgpath: github.com/DataDog/dd-trace-go/contrib/go-redis/redis.v7/v2
+          - pkgpath: github.com/GuanceCloud/dd-trace-go/contrib/go-redis/redis.v7/v2
             yaml:
               name: orchestrion.yml
               aspects:
@@ -186,7 +186,7 @@ imports:
         yaml: null
       - pkgpath: gopkg.in/DataDog/dd-trace-go.v1/contrib/go-redis/redis.v8
         imports:
-          - pkgpath: github.com/DataDog/dd-trace-go/contrib/go-redis/redis.v8/v2
+          - pkgpath: github.com/GuanceCloud/dd-trace-go/contrib/go-redis/redis.v8/v2
             yaml:
               name: orchestrion.yml
               aspects:
@@ -194,7 +194,7 @@ imports:
         yaml: null
       - pkgpath: gopkg.in/DataDog/dd-trace-go.v1/contrib/go.mongodb.org/mongo-driver/mongo
         imports:
-          - pkgpath: github.com/DataDog/dd-trace-go/contrib/go.mongodb.org/mongo-driver/v2/mongo
+          - pkgpath: github.com/GuanceCloud/dd-trace-go/contrib/go.mongodb.org/mongo-driver/v2/mongo
             yaml:
               name: orchestrion.yml
               aspects:
@@ -202,7 +202,7 @@ imports:
         yaml: null
       - pkgpath: gopkg.in/DataDog/dd-trace-go.v1/contrib/gocql/gocql
         imports:
-          - pkgpath: github.com/DataDog/dd-trace-go/contrib/gocql/gocql/v2
+          - pkgpath: github.com/GuanceCloud/dd-trace-go/contrib/gocql/gocql/v2
             yaml:
               name: orchestrion.yml
               aspects:
@@ -211,7 +211,7 @@ imports:
         yaml: null
       - pkgpath: gopkg.in/DataDog/dd-trace-go.v1/contrib/gofiber/fiber.v2
         imports:
-          - pkgpath: github.com/DataDog/dd-trace-go/contrib/gofiber/fiber.v2/v2
+          - pkgpath: github.com/GuanceCloud/dd-trace-go/contrib/gofiber/fiber.v2/v2
             yaml:
               name: orchestrion.yml
               aspects:
@@ -219,7 +219,7 @@ imports:
         yaml: null
       - pkgpath: gopkg.in/DataDog/dd-trace-go.v1/contrib/gomodule/redigo
         imports:
-          - pkgpath: github.com/DataDog/dd-trace-go/contrib/gomodule/redigo/v2
+          - pkgpath: github.com/GuanceCloud/dd-trace-go/contrib/gomodule/redigo/v2
             yaml:
               name: orchestrion.yml
               aspects:
@@ -229,7 +229,7 @@ imports:
         yaml: null
       - pkgpath: gopkg.in/DataDog/dd-trace-go.v1/contrib/google.golang.org/grpc
         imports:
-          - pkgpath: github.com/DataDog/dd-trace-go/contrib/google.golang.org/grpc/v2
+          - pkgpath: github.com/GuanceCloud/dd-trace-go/contrib/google.golang.org/grpc/v2
             yaml:
               name: orchestrion.yml
               aspects:
@@ -238,7 +238,7 @@ imports:
         yaml: null
       - pkgpath: gopkg.in/DataDog/dd-trace-go.v1/contrib/gorilla/mux
         imports:
-          - pkgpath: github.com/DataDog/dd-trace-go/contrib/gorilla/mux/v2
+          - pkgpath: github.com/GuanceCloud/dd-trace-go/contrib/gorilla/mux/v2
             yaml:
               name: orchestrion.yml
               aspects:
@@ -248,7 +248,7 @@ imports:
         yaml: null
       - pkgpath: gopkg.in/DataDog/dd-trace-go.v1/contrib/gorm.io/gorm.v1
         imports:
-          - pkgpath: github.com/DataDog/dd-trace-go/contrib/gorm.io/gorm.v1/v2
+          - pkgpath: github.com/GuanceCloud/dd-trace-go/contrib/gorm.io/gorm.v1/v2
             yaml:
               name: orchestrion.yml
               aspects:
@@ -256,7 +256,7 @@ imports:
         yaml: null
       - pkgpath: gopkg.in/DataDog/dd-trace-go.v1/contrib/graph-gophers/graphql-go
         imports:
-          - pkgpath: github.com/DataDog/dd-trace-go/contrib/graph-gophers/graphql-go/v2
+          - pkgpath: github.com/GuanceCloud/dd-trace-go/contrib/graph-gophers/graphql-go/v2
             yaml:
               name: orchestrion.yml
               aspects:
@@ -264,7 +264,7 @@ imports:
         yaml: null
       - pkgpath: gopkg.in/DataDog/dd-trace-go.v1/contrib/graphql-go/graphql
         imports:
-          - pkgpath: github.com/DataDog/dd-trace-go/contrib/graphql-go/graphql/v2
+          - pkgpath: github.com/GuanceCloud/dd-trace-go/contrib/graphql-go/graphql/v2
             yaml:
               name: orchestrion.yml
               aspects:
@@ -272,7 +272,7 @@ imports:
         yaml: null
       - pkgpath: gopkg.in/DataDog/dd-trace-go.v1/contrib/hashicorp/vault
         imports:
-          - pkgpath: github.com/DataDog/dd-trace-go/contrib/hashicorp/vault/v2
+          - pkgpath: github.com/GuanceCloud/dd-trace-go/contrib/hashicorp/vault/v2
             yaml:
               name: orchestrion.yml
               aspects:
@@ -280,7 +280,7 @@ imports:
         yaml: null
       - pkgpath: gopkg.in/DataDog/dd-trace-go.v1/contrib/jackc/pgx.v5
         imports:
-          - pkgpath: github.com/DataDog/dd-trace-go/contrib/jackc/pgx.v5/v2
+          - pkgpath: github.com/GuanceCloud/dd-trace-go/contrib/jackc/pgx.v5/v2
             yaml:
               name: orchestrion.yml
               aspects:
@@ -296,7 +296,7 @@ imports:
             - Open
       - pkgpath: gopkg.in/DataDog/dd-trace-go.v1/contrib/julienschmidt/httprouter
         imports:
-          - pkgpath: github.com/DataDog/dd-trace-go/contrib/julienschmidt/httprouter/v2
+          - pkgpath: github.com/GuanceCloud/dd-trace-go/contrib/julienschmidt/httprouter/v2
             yaml:
               name: orchestrion.yml
               aspects:
@@ -305,7 +305,7 @@ imports:
         yaml: null
       - pkgpath: gopkg.in/DataDog/dd-trace-go.v1/contrib/k8s.io/client-go/kubernetes
         imports:
-          - pkgpath: github.com/DataDog/dd-trace-go/contrib/k8s.io/client-go/v2/kubernetes
+          - pkgpath: github.com/GuanceCloud/dd-trace-go/contrib/k8s.io/client-go/v2/kubernetes
             yaml:
               name: orchestrion.yml
               aspects:
@@ -313,7 +313,7 @@ imports:
         yaml: null
       - pkgpath: gopkg.in/DataDog/dd-trace-go.v1/contrib/labstack/echo.v4
         imports:
-          - pkgpath: github.com/DataDog/dd-trace-go/contrib/labstack/echo.v4/v2
+          - pkgpath: github.com/GuanceCloud/dd-trace-go/contrib/labstack/echo.v4/v2
             yaml:
               name: orchestrion.yml
               aspects:
@@ -321,7 +321,7 @@ imports:
         yaml: null
       - pkgpath: gopkg.in/DataDog/dd-trace-go.v1/contrib/log/slog
         imports:
-          - pkgpath: github.com/DataDog/dd-trace-go/contrib/log/slog/v2
+          - pkgpath: github.com/GuanceCloud/dd-trace-go/contrib/log/slog/v2
             yaml:
               name: orchestrion.yml
               aspects:
@@ -329,7 +329,7 @@ imports:
         yaml: null
       - pkgpath: gopkg.in/DataDog/dd-trace-go.v1/contrib/net/http
         imports:
-          - pkgpath: github.com/DataDog/dd-trace-go/contrib/net/http/v2
+          - pkgpath: github.com/GuanceCloud/dd-trace-go/contrib/net/http/v2
             yaml:
               name: orchestrion.yml
               extends:
@@ -345,7 +345,7 @@ imports:
         yaml: null
       - pkgpath: gopkg.in/DataDog/dd-trace-go.v1/contrib/os
         imports:
-          - pkgpath: github.com/DataDog/dd-trace-go/v2/contrib/os
+          - pkgpath: github.com/GuanceCloud/dd-trace-go/v2/contrib/os
             yaml:
               name: orchestrion.yml
               aspects:
@@ -353,7 +353,7 @@ imports:
         yaml: null
       - pkgpath: gopkg.in/DataDog/dd-trace-go.v1/contrib/redis/go-redis.v9
         imports:
-          - pkgpath: github.com/DataDog/dd-trace-go/contrib/redis/go-redis.v9/v2
+          - pkgpath: github.com/GuanceCloud/dd-trace-go/contrib/redis/go-redis.v9/v2
             yaml:
               name: orchestrion.yml
               aspects:
@@ -361,7 +361,7 @@ imports:
         yaml: null
       - pkgpath: gopkg.in/DataDog/dd-trace-go.v1/contrib/redis/rueidis
         imports:
-          - pkgpath: github.com/DataDog/dd-trace-go/contrib/redis/rueidis/v2
+          - pkgpath: github.com/GuanceCloud/dd-trace-go/contrib/redis/rueidis/v2
             yaml:
               name: orchestrion.yml
               aspects:
@@ -369,7 +369,7 @@ imports:
         yaml: null
       - pkgpath: gopkg.in/DataDog/dd-trace-go.v1/contrib/segmentio/kafka.go.v0
         imports:
-          - pkgpath: github.com/DataDog/dd-trace-go/contrib/segmentio/kafka-go/v2
+          - pkgpath: github.com/GuanceCloud/dd-trace-go/contrib/segmentio/kafka-go/v2
             yaml:
               name: orchestrion.yml
               aspects:
@@ -381,7 +381,7 @@ imports:
         yaml: null
       - pkgpath: gopkg.in/DataDog/dd-trace-go.v1/contrib/sirupsen/logrus
         imports:
-          - pkgpath: github.com/DataDog/dd-trace-go/contrib/sirupsen/logrus/v2
+          - pkgpath: github.com/GuanceCloud/dd-trace-go/contrib/sirupsen/logrus/v2
             yaml:
               name: orchestrion.yml
               aspects:
@@ -392,7 +392,7 @@ imports:
         yaml: null
       - pkgpath: gopkg.in/DataDog/dd-trace-go.v1/contrib/twitchtv/twirp
         imports:
-          - pkgpath: github.com/DataDog/dd-trace-go/contrib/twitchtv/twirp/v2
+          - pkgpath: github.com/GuanceCloud/dd-trace-go/contrib/twitchtv/twirp/v2
             yaml:
               name: orchestrion.yml
               aspects:
@@ -400,7 +400,7 @@ imports:
         yaml: null
       - pkgpath: gopkg.in/DataDog/dd-trace-go.v1/contrib/valkey-go
         imports:
-          - pkgpath: github.com/DataDog/dd-trace-go/contrib/valkey-io/valkey-go/v2
+          - pkgpath: github.com/GuanceCloud/dd-trace-go/contrib/valkey-io/valkey-go/v2
             yaml:
               name: orchestrion.yml
               aspects:
@@ -408,7 +408,7 @@ imports:
         yaml: null
       - pkgpath: gopkg.in/DataDog/dd-trace-go.v1/ddtrace/tracer
         imports:
-          - pkgpath: github.com/DataDog/dd-trace-go/v2/ddtrace/tracer
+          - pkgpath: github.com/GuanceCloud/dd-trace-go/v2/ddtrace/tracer
             yaml:
               name: orchestrion.yml
               extends:
@@ -422,7 +422,7 @@ imports:
         yaml: null
       - pkgpath: gopkg.in/DataDog/dd-trace-go.v1/profiler
         imports:
-          - pkgpath: github.com/DataDog/dd-trace-go/v2/profiler
+          - pkgpath: github.com/GuanceCloud/dd-trace-go/v2/profiler
             yaml:
               name: orchestrion.yml
               aspects:

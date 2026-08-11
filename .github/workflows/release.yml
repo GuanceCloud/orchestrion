@@ -110,14 +110,14 @@ jobs:
             dir=$(dirname "${gomod}")
             mod=$(go -C "${dir}" list -m)
             case "${mod}" in
-              github.com/DataDog/orchestrion)
+              github.com/GuanceCloud/orchestrion)
                 # This is the main module, the release already tagged it
                 continue
                 ;;
-              github.com/DataDog/orchestrion/*)
+              github.com/GuanceCloud/orchestrion/*)
                 # This is a submodule, we'll publish it if the prefix matches the directory name
                 echo "Found sub-module: ${mod} in ${gomod}"
-                suffix="${mod#'github.com/DataDog/orchestrion/'}"
+                suffix="${mod#'github.com/GuanceCloud/orchestrion/'}"
                 if [ "${suffix}" != "${dir#'./'}" ]; then
                   echo "-> Ignoring submodule with mismatched directory path and suffix: ${dir#'./'} != ${suffix}"
                   continue

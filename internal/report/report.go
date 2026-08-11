@@ -19,8 +19,8 @@ import (
 	"slices"
 	"strings"
 
-	"github.com/DataDog/orchestrion/internal/injector/parse"
-	"github.com/DataDog/orchestrion/internal/toolexec/aspect"
+	"github.com/GuanceCloud/orchestrion/internal/injector/parse"
+	"github.com/GuanceCloud/orchestrion/internal/toolexec/aspect"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 )

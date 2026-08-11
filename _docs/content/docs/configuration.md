@@ -14,7 +14,7 @@ The file is a Go source file, and it must be valid Go code. If your project does
 
 {{<callout type="info">}}
 Orchestrion is a vendor-agnostic tool. By default, `orchestrion pin` enables Datadog's tracer integrations by
-importing `github.com/DataDog/dd-trace-go/orchestrion/all/v2` in `orchestrion.tool.go`, but other vendors (such as OpenTelemetry) may
+importing `github.com/GuanceCloud/dd-trace-go/orchestrion/all/v2` in `orchestrion.tool.go`, but other vendors (such as OpenTelemetry) may
 provide alternate integrations that can be used instead.
 {{</callout>}}
 
@@ -27,11 +27,11 @@ tree-like structure (packages are de-duplicated so you don't have to worry about
 
 ```mermaid
 flowchart TD
-    root --> github.com/DataDog/dd-trace-go/orchestrion/all
-    github.com/DataDog/dd-trace-go/orchestrion/all --> ddtrace/tracer
-    github.com/DataDog/dd-trace-go/orchestrion/all --> contrib/net/http
-    github.com/DataDog/dd-trace-go/orchestrion/all --> contrib/database/sql
-    github.com/DataDog/dd-trace-go/orchestrion/all --> ...
+    root --> github.com/GuanceCloud/dd-trace-go/orchestrion/all
+    github.com/GuanceCloud/dd-trace-go/orchestrion/all --> ddtrace/tracer
+    github.com/GuanceCloud/dd-trace-go/orchestrion/all --> contrib/net/http
+    github.com/GuanceCloud/dd-trace-go/orchestrion/all --> contrib/database/sql
+    github.com/GuanceCloud/dd-trace-go/orchestrion/all --> ...
 ```
 
 Each package encountered in the configuration loading step is allowed to contain an `orchestrion.yml` file. These files
@@ -42,12 +42,12 @@ are the auto-instrumentation configuration backbone that modify your codebase. P
 
 ### Finer grain instrumentation
 
-The default `orchestrion.tool.go` imports all integrations provided by the `github.com/DataDog/dd-trace-go/orchestrion/all/v2`
+The default `orchestrion.tool.go` imports all integrations provided by the `github.com/GuanceCloud/dd-trace-go/orchestrion/all/v2`
 package. But this can be cumbersome if you only want to use a subset of the integrations. You can expand the default
-`orchestrion.tool.go` by replacing the import of `github.com/DataDog/dd-trace-go/v2` with the specific integrations you
+`orchestrion.tool.go` by replacing the import of `github.com/GuanceCloud/dd-trace-go/v2` with the specific integrations you
 want to use from the list available at one level deeper in the configuration loading tree [here][orchestrion-all].
 
-[orchestrion-all]: https://github.com/DataDog/dd-trace-go/blob/main/orchestrion/all/orchestrion.tool.go
+[orchestrion-all]: https://github.com/GuanceCloud/dd-trace-go/blob/main/orchestrion/all/orchestrion.tool.go
 
 ### Remove an integration
 

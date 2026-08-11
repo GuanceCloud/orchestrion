@@ -13,9 +13,9 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/DataDog/dd-trace-go/v2/ddtrace/tracer"
-	"github.com/DataDog/orchestrion/internal/injector/aspect"
-	"github.com/DataDog/orchestrion/internal/yaml"
+	"github.com/GuanceCloud/dd-trace-go/v2/ddtrace/tracer"
+	"github.com/GuanceCloud/orchestrion/internal/injector/aspect"
+	"github.com/GuanceCloud/orchestrion/internal/yaml"
 	"github.com/goccy/go-yaml/ast"
 )
 

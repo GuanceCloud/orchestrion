@@ -6,7 +6,7 @@
 package config
 
 import (
-	"github.com/DataDog/orchestrion/internal/injector/aspect"
+	"github.com/GuanceCloud/orchestrion/internal/injector/aspect"
 )
 
 type (

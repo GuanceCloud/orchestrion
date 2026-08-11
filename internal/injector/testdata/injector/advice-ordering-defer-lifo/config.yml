@@ -12,7 +12,7 @@ aspects:
     advice:
       - prepend-statements:
           imports:
-            tracer: github.com/DataDog/dd-trace-go/v2/ddtrace/tracer
+            tracer: github.com/GuanceCloud/dd-trace-go/v2/ddtrace/tracer
           template: |-
             {{- $ctx := .Function.ArgumentOfType "context.Context" -}}
             {{ $ret := .Function.LastResultThatImplements "error" }}
@@ -35,7 +35,7 @@ aspects:
       - prepend-statements:
           order: 20 # Execute second in aspect definition order
           imports:
-            errortrace: github.com/DataDog/dd-trace-go/v2/instrumentation/errortrace
+            errortrace: github.com/GuanceCloud/dd-trace-go/v2/instrumentation/errortrace
           template: |-
             {{ $ret := .Function.LastResultThatImplements "error" }}
             {{ with $ret }}
@@ -56,8 +56,8 @@ aspects:
 # This ensures span.Finish() captures the wrapped/processed error!
 
 syntheticReferences:
-  github.com/DataDog/dd-trace-go/v2/ddtrace/tracer: true
-  github.com/DataDog/dd-trace-go/v2/instrumentation/errortrace: true
+  github.com/GuanceCloud/dd-trace-go/v2/ddtrace/tracer: true
+  github.com/GuanceCloud/dd-trace-go/v2/instrumentation/errortrace: true
 
 code: |-
   package test

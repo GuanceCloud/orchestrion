@@ -13,7 +13,7 @@ import (
 	"net/url"
 	"strings"
 //line <generated>:1
-	__orchestrion___ddtrace_client "github.com/DataDog/dd-trace-go/contrib/net/http/v2/client"
+	__orchestrion___ddtrace_client "github.com/GuanceCloud/dd-trace-go/contrib/net/http/v2/client"
 )
 
 //line samples/client/http.go:16

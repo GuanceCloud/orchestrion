@@ -19,10 +19,10 @@ import (
 
 	"golang.org/x/tools/go/packages"
 
-	"github.com/DataDog/orchestrion/internal/injector/aspect/advice"
-	"github.com/DataDog/orchestrion/internal/injector/aspect/advice/code"
-	"github.com/DataDog/orchestrion/internal/injector/aspect/join"
-	"github.com/DataDog/orchestrion/internal/injector/typed"
+	"github.com/GuanceCloud/orchestrion/internal/injector/aspect/advice"
+	"github.com/GuanceCloud/orchestrion/internal/injector/aspect/advice/code"
+	"github.com/GuanceCloud/orchestrion/internal/injector/aspect/join"
+	"github.com/GuanceCloud/orchestrion/internal/injector/typed"
 )
 
 var (

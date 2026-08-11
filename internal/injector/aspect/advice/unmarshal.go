@@ -9,7 +9,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/DataDog/orchestrion/internal/injector/singleton"
+	"github.com/GuanceCloud/orchestrion/internal/injector/singleton"
 	"github.com/goccy/go-yaml/ast"
 )
 

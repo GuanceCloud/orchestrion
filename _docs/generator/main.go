@@ -21,7 +21,7 @@ func main() {
 		Dir:          filepath.Join(thisFile, "..", "..", "content", "docs", "dd-trace-go", "v2"),
 		ConfigSource: filepath.Join(thisFile, "..", ".."),
 		Validate:     true,
-		CommonPrefix: "github.com/DataDog/dd-trace-go/",
+		CommonPrefix: "github.com/GuanceCloud/dd-trace-go/",
 		TrimPrefix:   "v2/",
 		TrimSuffix:   "/v2",
 	}

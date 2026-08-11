@@ -12,10 +12,10 @@ import (
 	"slices"
 	"strings"
 
-	"github.com/DataDog/orchestrion/internal/binpath"
-	"github.com/DataDog/orchestrion/internal/goproxy"
-	"github.com/DataDog/orchestrion/internal/pin"
-	"github.com/DataDog/orchestrion/internal/report"
+	"github.com/GuanceCloud/orchestrion/internal/binpath"
+	"github.com/GuanceCloud/orchestrion/internal/goproxy"
+	"github.com/GuanceCloud/orchestrion/internal/pin"
+	"github.com/GuanceCloud/orchestrion/internal/report"
 	"github.com/urfave/cli/v2"
 )
 

@@ -12,9 +12,9 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/DataDog/orchestrion/internal/gomod"
-	"github.com/DataDog/orchestrion/internal/injector/config"
-	"github.com/DataDog/orchestrion/internal/version"
+	"github.com/GuanceCloud/orchestrion/internal/gomod"
+	"github.com/GuanceCloud/orchestrion/internal/injector/config"
+	"github.com/GuanceCloud/orchestrion/internal/version"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -42,7 +42,7 @@ func TestAutoPin(t *testing.T) {
 		require.NoError(t, err)
 
 		rawTag, _ := version.TagInfo()
-		assert.Contains(t, data.Require, gomod.Require{Path: "github.com/DataDog/orchestrion", Version: rawTag})
+		assert.Contains(t, data.Require, gomod.Require{Path: "github.com/GuanceCloud/orchestrion", Version: rawTag})
 	})
 
 	t.Run("already-checked", func(t *testing.T) {

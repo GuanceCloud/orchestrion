@@ -9,10 +9,10 @@ import (
 	"context"
 	"errors"
 
-	"github.com/DataDog/orchestrion/internal/fingerprint"
-	"github.com/DataDog/orchestrion/internal/injector/aspect/advice"
-	"github.com/DataDog/orchestrion/internal/injector/aspect/join"
-	"github.com/DataDog/orchestrion/internal/yaml"
+	"github.com/GuanceCloud/orchestrion/internal/fingerprint"
+	"github.com/GuanceCloud/orchestrion/internal/injector/aspect/advice"
+	"github.com/GuanceCloud/orchestrion/internal/injector/aspect/join"
+	"github.com/GuanceCloud/orchestrion/internal/yaml"
 	"github.com/goccy/go-yaml/ast"
 )
 

@@ -34,7 +34,7 @@ jobs:
           mkdir -p "${GOCOVERDIR}"
           find . -name go.mod -execdir go generate ./... \;
         env:
-          GOFLAGS: -cover -covermode=atomic -coverpkg=github.com/DataDog/orchestrion/...,./...
+          GOFLAGS: -cover -covermode=atomic -coverpkg=github.com/GuanceCloud/orchestrion/...,./...
           GOCOVERDIR: ${{ github.workspace }}/coverage
       - name: Consolidate coverage report
         if: github.event_name != 'merge_group' && !(github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork)
@@ -58,9 +58,9 @@ jobs:
           currentTag=$(go run . version -static | cut -d' ' -f 2)
           find . -iname go.mod -not -path './_docs/themes/**' -print0 | while IFS= read -r -d '' gomod; do
             dir="$(dirname "${gomod}")"
-            if [[ -n $(go -C="${dir}" mod edit --json | jq '(.Replace // []).[] | select(.Old.Path == "github.com/DataDog/orchestrion")') ]]; then
+            if [[ -n $(go -C="${dir}" mod edit --json | jq '(.Replace // []).[] | select(.Old.Path == "github.com/GuanceCloud/orchestrion")') ]]; then
               echo "Aligning orchestrion version in ${dir} to ${currentTag} if necessary..."
-              go -C="${dir}" mod edit -go="$(go -C="${dir}" mod edit -json | jq -r .Go)" -require="github.com/DataDog/orchestrion@${currentTag}"
+              go -C="${dir}" mod edit -go="$(go -C="${dir}" mod edit -json | jq -r .Go)" -require="github.com/GuanceCloud/orchestrion@${currentTag}"
             fi
             go -C="${dir}" mod tidy -go="$(go -C="${dir}" mod edit -json | jq -r .Go)"
             go -C="${dir}" mod edit -toolchain=none
@@ -273,7 +273,7 @@ jobs:
             test_args+=("-timeout=30m")
           fi
           if [ "${{ github.event_name }}" != "merge_group" ]; then
-            test_args+=("-cover" "-covermode=atomic" "-coverpkg=./...,github.com/DataDog/orchestrion/...")
+            test_args+=("-cover" "-covermode=atomic" "-coverpkg=./...,github.com/GuanceCloud/orchestrion/...")
           fi
           go            test "${test_args[@]}" "-coverprofile=${{ github.workspace }}/coverage/unit.out" ./...
           go -C samples test "${test_args[@]}" "-coverprofile=${{ github.workspace }}/coverage/samples.out" ./...

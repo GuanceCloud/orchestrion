@@ -13,9 +13,9 @@ import (
 	"os"
 	"strings"
 
-	"github.com/DataDog/orchestrion/internal/ensure"
-	"github.com/DataDog/orchestrion/internal/injector/config"
-	"github.com/DataDog/orchestrion/internal/version"
+	"github.com/GuanceCloud/orchestrion/internal/ensure"
+	"github.com/GuanceCloud/orchestrion/internal/injector/config"
+	"github.com/GuanceCloud/orchestrion/internal/version"
 	"github.com/charmbracelet/lipgloss"
 	"github.com/rs/zerolog"
 	"golang.org/x/term"

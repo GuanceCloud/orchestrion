@@ -12,7 +12,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/DataDog/orchestrion/internal/cmd"
+	"github.com/GuanceCloud/orchestrion/internal/cmd"
 	"github.com/stretchr/testify/require"
 	"github.com/urfave/cli/v2"
 )

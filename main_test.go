@@ -37,16 +37,16 @@ func TestSyntheticLinkDependencyUsesTestVariant(t *testing.T) {
 
 go 1.25
 
-require github.com/DataDog/orchestrion v0.0.0
+require github.com/GuanceCloud/orchestrion v0.0.0
 
-replace github.com/DataDog/orchestrion => `+rootDir+"\n")
+replace github.com/GuanceCloud/orchestrion => `+rootDir+"\n")
 	writeFile("orchestrion.tool.go", `//go:build tools
 
 package tools
 
 import (
 	_ "example.com/testvariant/instrumentation"
-	_ "github.com/DataDog/orchestrion"
+	_ "github.com/GuanceCloud/orchestrion"
 )
 `)
 	writeFile("instrumentation/instrumentation.go", "package instrumentation\n")
@@ -121,16 +121,16 @@ func TestSyntheticLinkDependencyWithExternalTests(t *testing.T) {
 
 go 1.25
 
-require github.com/DataDog/orchestrion v0.0.0
+require github.com/GuanceCloud/orchestrion v0.0.0
 
-replace github.com/DataDog/orchestrion => `+rootDir+"\n")
+replace github.com/GuanceCloud/orchestrion => `+rootDir+"\n")
 	writeFile("orchestrion.tool.go", `//go:build tools
 
 package tools
 
 import (
 	_ "example.com/externaltestvariant/instrumentation"
-	_ "github.com/DataDog/orchestrion"
+	_ "github.com/GuanceCloud/orchestrion"
 )
 `)
 	writeFile("instrumentation/instrumentation.go", "package instrumentation\n")
@@ -180,15 +180,15 @@ func Value() int { return subject.Value() }
 func TestBuildFromModuleSubdirectory(t *testing.T) {
 	run := runner{dir: t.TempDir()}
 
-	run.exec(t, "go", "mod", "init", "github.com/DataDog/orchestrion.testing")
-	run.exec(t, "go", "mod", "edit", "-replace=github.com/DataDog/orchestrion="+rootDir)
+	run.exec(t, "go", "mod", "init", "github.com/GuanceCloud/orchestrion.testing")
+	run.exec(t, "go", "mod", "edit", "-replace=github.com/GuanceCloud/orchestrion="+rootDir)
 	require.NoError(t, os.Mkdir(filepath.Join(run.dir, "cmd"), 0o755))
 	require.NoError(t, os.WriteFile(filepath.Join(run.dir, "cmd", "main.go"), []byte(`package main
 
 import (
 	"log"
 
-	"github.com/DataDog/orchestrion/runtime/built"
+	"github.com/GuanceCloud/orchestrion/runtime/built"
 )
 
 func main() {
@@ -264,7 +264,7 @@ func benchmarkGithub(owner string, repo string, subdir string, build string, tes
 			tc.dir = filepath.Join(tc.dir, subdir)
 		}
 		tc.exec(b, "go", "mod", "download")
-		tc.exec(b, "go", "mod", "edit", "-replace=github.com/DataDog/orchestrion="+rootDir)
+		tc.exec(b, "go", "mod", "edit", "-replace=github.com/GuanceCloud/orchestrion="+rootDir)
 		if replace := os.Getenv("DD_TRACE_GO_REPLACE"); replace != "" {
 			applyDDTraceGoReplaces(b, &tc.runner, replace)
 		}
@@ -414,7 +414,7 @@ func getGithubToken() (string, bool) {
 }
 
 // applyDDTraceGoReplaces walks replace, finds every go.mod whose module path
-// starts with github.com/DataDog/dd-trace-go, and adds a corresponding replace
+// starts with github.com/GuanceCloud/dd-trace-go, and adds a corresponding replace
 // directive to the target's go.mod. This lets the benchmarks build against a
 // local checkout of dd-trace-go (including branches where transitive contribs
 // reference an unpublished placeholder version like v2.10.0-dev).
@@ -449,7 +449,7 @@ func applyDDTraceGoReplaces(b *testing.B, r *runner, replace string) {
 			return nil
 		}
 		modPath := mod.Module.Mod.Path
-		if !strings.HasPrefix(modPath, "github.com/DataDog/dd-trace-go") {
+		if !strings.HasPrefix(modPath, "github.com/GuanceCloud/dd-trace-go") {
 			return nil
 		}
 		r.exec(b, "go", "mod", "edit", "-replace="+modPath+"="+filepath.Dir(path))

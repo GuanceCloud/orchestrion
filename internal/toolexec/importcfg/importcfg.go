@@ -15,7 +15,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/DataDog/dd-trace-go/v2/ddtrace/tracer"
+	"github.com/GuanceCloud/dd-trace-go/v2/ddtrace/tracer"
 )
 
 // ImportConfig represents the parsed out contents of an `importcfg` (or `importcfg.link`) file,

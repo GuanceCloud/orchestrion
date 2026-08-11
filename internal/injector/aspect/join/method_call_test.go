@@ -14,9 +14,9 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/DataDog/orchestrion/internal/fingerprint"
-	"github.com/DataDog/orchestrion/internal/injector/aspect/may"
-	"github.com/DataDog/orchestrion/internal/injector/typed"
+	"github.com/GuanceCloud/orchestrion/internal/fingerprint"
+	"github.com/GuanceCloud/orchestrion/internal/injector/aspect/may"
+	"github.com/GuanceCloud/orchestrion/internal/injector/typed"
 )
 
 func newNamedType(pkgPath string, pkgName string, typeName string) *types.Named {

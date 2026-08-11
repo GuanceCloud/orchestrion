@@ -12,10 +12,10 @@ import (
 	"os/exec"
 	"strings"
 
-	"github.com/DataDog/orchestrion/internal/jobserver"
-	"github.com/DataDog/orchestrion/internal/jobserver/buildid"
-	"github.com/DataDog/orchestrion/internal/jobserver/client"
-	"github.com/DataDog/orchestrion/internal/toolexec/proxy"
+	"github.com/GuanceCloud/orchestrion/internal/jobserver"
+	"github.com/GuanceCloud/orchestrion/internal/jobserver/buildid"
+	"github.com/GuanceCloud/orchestrion/internal/jobserver/client"
+	"github.com/GuanceCloud/orchestrion/internal/toolexec/proxy"
 	"github.com/rs/zerolog"
 )
 

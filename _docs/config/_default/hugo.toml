@@ -29,7 +29,7 @@ params = { type = 'search' }
 
 [[menu.main]]
 name = 'Source'
-url = 'https://github.com/DataDog/orchestrion'
+url = 'https://github.com/GuanceCloud/orchestrion'
 weight = 999
 params = { icon = 'github' }
 
@@ -51,7 +51,7 @@ dateFormat = '2006-02-01'
 
 [params.editURL]
 enable = true
-base = 'https://github.com/DataDog/orchestrion/edit/main/_docs/content'
+base = 'https://github.com/GuanceCloud/orchestrion/edit/main/_docs/content'
 
 [params.footer]
 displayCopyright = true

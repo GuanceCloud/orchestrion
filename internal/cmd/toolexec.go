@@ -11,11 +11,11 @@ import (
 	"os"
 	"strings"
 
-	"github.com/DataDog/dd-trace-go/v2/ddtrace/tracer"
-	"github.com/DataDog/orchestrion/internal/pin"
-	"github.com/DataDog/orchestrion/internal/toolexec"
-	"github.com/DataDog/orchestrion/internal/toolexec/aspect"
-	"github.com/DataDog/orchestrion/internal/toolexec/proxy"
+	"github.com/GuanceCloud/dd-trace-go/v2/ddtrace/tracer"
+	"github.com/GuanceCloud/orchestrion/internal/pin"
+	"github.com/GuanceCloud/orchestrion/internal/toolexec"
+	"github.com/GuanceCloud/orchestrion/internal/toolexec/aspect"
+	"github.com/GuanceCloud/orchestrion/internal/toolexec/proxy"
 	"github.com/rs/zerolog"
 	"github.com/urfave/cli/v2"
 )

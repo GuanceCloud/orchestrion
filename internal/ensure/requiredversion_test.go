@@ -16,8 +16,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/DataDog/orchestrion/internal/goenv"
-	"github.com/DataDog/orchestrion/internal/version"
+	"github.com/GuanceCloud/orchestrion/internal/goenv"
+	"github.com/GuanceCloud/orchestrion/internal/version"
 	"github.com/stretchr/testify/require"
 	"golang.org/x/mod/semver"
 )

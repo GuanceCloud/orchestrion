@@ -15,7 +15,7 @@ import (
 	"strings"
 	"time"
 //line <generated>:1
-	__orchestrion_tracer "github.com/DataDog/dd-trace-go/v2/ddtrace/tracer"
+	__orchestrion_tracer "github.com/GuanceCloud/dd-trace-go/v2/ddtrace/tracer"
 )
 
 //line samples/server/other_handlers.go:18

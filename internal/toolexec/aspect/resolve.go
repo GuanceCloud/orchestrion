@@ -11,11 +11,11 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/DataDog/dd-trace-go/v2/ddtrace/tracer"
-	"github.com/DataDog/orchestrion/internal/jobserver/client"
-	"github.com/DataDog/orchestrion/internal/jobserver/pkgs"
-	"github.com/DataDog/orchestrion/internal/toolexec/aspect/linkdeps"
-	"github.com/DataDog/orchestrion/internal/toolexec/importcfg"
+	"github.com/GuanceCloud/dd-trace-go/v2/ddtrace/tracer"
+	"github.com/GuanceCloud/orchestrion/internal/jobserver/client"
+	"github.com/GuanceCloud/orchestrion/internal/jobserver/pkgs"
+	"github.com/GuanceCloud/orchestrion/internal/toolexec/aspect/linkdeps"
+	"github.com/GuanceCloud/orchestrion/internal/toolexec/importcfg"
 )
 
 // resolvePackageFiles attempts to retrieve the archive for the designated import path. It attempts

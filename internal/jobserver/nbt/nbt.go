@@ -14,8 +14,8 @@ import (
 	"sync"
 	"sync/atomic"
 
-	"github.com/DataDog/orchestrion/internal/files"
-	"github.com/DataDog/orchestrion/internal/jobserver/common"
+	"github.com/GuanceCloud/orchestrion/internal/files"
+	"github.com/GuanceCloud/orchestrion/internal/jobserver/common"
 	"github.com/google/uuid"
 	"github.com/nats-io/nats.go"
 	"github.com/rs/zerolog"
@@ -125,7 +125,7 @@ func (r StartRequest) ForeachSpanTag(set func(key string, value any)) {
 
 // cacheKey creates a composite key from importPath and buildID to support
 // different build configurations (e.g., with/without PGO) of the same package.
-// See: https://github.com/DataDog/orchestrion/issues/653
+// See: https://github.com/GuanceCloud/orchestrion/issues/653
 func cacheKey(importPath string, buildID string) string {
 	return importPath + "\x00" + buildID
 }

@@ -15,8 +15,8 @@ import (
 
 	_ "github.com/mattn/go-sqlite3"
 //line <generated>:1
-	__orchestrion_v2 "github.com/DataDog/dd-trace-go/contrib/database/sql/v2"
-	__orchestrion_gormtrace "github.com/DataDog/dd-trace-go/contrib/gorm.io/gorm.v1/v2"
+	__orchestrion_v2 "github.com/GuanceCloud/dd-trace-go/contrib/database/sql/v2"
+	__orchestrion_gormtrace "github.com/GuanceCloud/dd-trace-go/contrib/gorm.io/gorm.v1/v2"
 )
 
 //line samples/client/gorm.go:18

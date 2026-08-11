@@ -97,9 +97,9 @@ tmp/make-help.txt: $(MAKEFILE_LIST)
 #   $ git clone github.com:DataDog/dd-trace-go         # Clone the DataDog/dd-trace-go repository
 #   $ cd dd-trace-go/internal/orchestrion/_integration # Move into the integration tests directory
 #   $ go mod edit \                                    # Use the local copy of orchestrion
-#       -replace "github.com/DataDog/orchestrion=>${orchestrion_dir}"
+#       -replace "github.com/GuanceCloud/orchestrion=>${orchestrion_dir}"
 #   $ go mod tidy                                      # Make sure go.mod & go.sum are up-to-date
-#   $ go run github.com/DataDog/orchestrion \          # Run integration test suite with orchestrion
+#   $ go run github.com/GuanceCloud/orchestrion \          # Run integration test suite with orchestrion
 #       go test -shuffle=on ./...
 #
 # Usage examples:
@@ -120,7 +120,7 @@ dd-trace-go-setup: dd-trace-go
 	@echo "Using orchestrion from: $(ORCHESTRION_DIR)"
 	@echo "Integration dir: $(DDTRACE_INTEGRATION_DIR)"
 	cd $(DDTRACE_INTEGRATION_DIR)
-	go mod edit -replace "github.com/DataDog/orchestrion=$(ORCHESTRION_DIR)"
+	go mod edit -replace "github.com/GuanceCloud/orchestrion=$(ORCHESTRION_DIR)"
 	go mod tidy
 
 .ONESHELL:
@@ -140,7 +140,7 @@ test-e2e: build
 test-integration: ## Run integration tests with dd-trace-go
 test-integration: dd-trace-go-setup
 	cd $(DDTRACE_INTEGRATION_DIR)
-	go run github.com/DataDog/orchestrion go test -v -shuffle=on -failfast ./... | tee $(ORCHESTRION_DIR)/test-integration.log
+	go run github.com/GuanceCloud/orchestrion go test -v -shuffle=on -failfast ./... | tee $(ORCHESTRION_DIR)/test-integration.log
 
 # Install tools
 

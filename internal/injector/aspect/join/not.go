@@ -8,9 +8,9 @@ package join
 import (
 	gocontext "context"
 
-	"github.com/DataDog/orchestrion/internal/fingerprint"
-	"github.com/DataDog/orchestrion/internal/injector/aspect/context"
-	"github.com/DataDog/orchestrion/internal/injector/aspect/may"
+	"github.com/GuanceCloud/orchestrion/internal/fingerprint"
+	"github.com/GuanceCloud/orchestrion/internal/injector/aspect/context"
+	"github.com/GuanceCloud/orchestrion/internal/injector/aspect/may"
 	"github.com/goccy/go-yaml/ast"
 )
 

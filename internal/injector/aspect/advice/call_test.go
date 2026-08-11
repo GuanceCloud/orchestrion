@@ -8,10 +8,10 @@ package advice_test
 import (
 	"testing"
 
-	"github.com/DataDog/orchestrion/internal/injector/aspect/advice"
-	"github.com/DataDog/orchestrion/internal/injector/aspect/advice/code"
-	"github.com/DataDog/orchestrion/internal/injector/aspect/context"
-	"github.com/DataDog/orchestrion/internal/injector/typed"
+	"github.com/GuanceCloud/orchestrion/internal/injector/aspect/advice"
+	"github.com/GuanceCloud/orchestrion/internal/injector/aspect/advice/code"
+	"github.com/GuanceCloud/orchestrion/internal/injector/aspect/context"
+	"github.com/GuanceCloud/orchestrion/internal/injector/typed"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

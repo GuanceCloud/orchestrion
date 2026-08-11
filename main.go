@@ -20,11 +20,11 @@ import (
 	"strings"
 	"time"
 
-	"github.com/DataDog/dd-trace-go/v2/ddtrace/tracer"
-	"github.com/DataDog/orchestrion/internal/cmd"
-	"github.com/DataDog/orchestrion/internal/jobserver/client"
-	"github.com/DataDog/orchestrion/internal/traceutil"
-	"github.com/DataDog/orchestrion/internal/version"
+	"github.com/GuanceCloud/dd-trace-go/v2/ddtrace/tracer"
+	"github.com/GuanceCloud/orchestrion/internal/cmd"
+	"github.com/GuanceCloud/orchestrion/internal/jobserver/client"
+	"github.com/GuanceCloud/orchestrion/internal/traceutil"
+	"github.com/GuanceCloud/orchestrion/internal/version"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"github.com/urfave/cli/v2"
@@ -45,7 +45,7 @@ func main() {
 	// If requested, start the tracer...
 	if os.Getenv(envVarOrchestrionTrace) != "" {
 		tracer.Start(
-			tracer.WithService("github.com/DataDog/orchestrion"),
+			tracer.WithService("github.com/GuanceCloud/orchestrion"),
 			tracer.WithServiceVersion(version.Tag()),
 			tracer.WithLogStartup(false),
 		)

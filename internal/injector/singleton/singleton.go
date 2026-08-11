@@ -9,7 +9,7 @@ import (
 	"context"
 	"errors"
 
-	"github.com/DataDog/orchestrion/internal/yaml"
+	"github.com/GuanceCloud/orchestrion/internal/yaml"
 	"github.com/goccy/go-yaml/ast"
 )
 

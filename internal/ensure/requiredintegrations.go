@@ -18,9 +18,9 @@ import (
 	"sync"
 	"sync/atomic"
 
-	"github.com/DataDog/orchestrion/internal/goenv"
-	"github.com/DataDog/orchestrion/internal/gomod"
-	"github.com/DataDog/orchestrion/internal/integrations"
+	"github.com/GuanceCloud/orchestrion/internal/goenv"
+	"github.com/GuanceCloud/orchestrion/internal/gomod"
+	"github.com/GuanceCloud/orchestrion/internal/integrations"
 	"github.com/rs/zerolog"
 	"golang.org/x/mod/semver"
 )

@@ -9,5 +9,5 @@ package tools
 
 import (
 	// Allows documentation generation for the V2 tracer integrations.
-	_ "github.com/DataDog/dd-trace-go/orchestrion/all/v2"
+	_ "github.com/GuanceCloud/dd-trace-go/orchestrion/all/v2"
 )

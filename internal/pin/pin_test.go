@@ -14,10 +14,10 @@ import (
 	"testing"
 	"text/template"
 
-	"github.com/DataDog/orchestrion/internal/gomod"
-	"github.com/DataDog/orchestrion/internal/injector/config"
-	"github.com/DataDog/orchestrion/internal/integrations"
-	"github.com/DataDog/orchestrion/internal/version"
+	"github.com/GuanceCloud/orchestrion/internal/gomod"
+	"github.com/GuanceCloud/orchestrion/internal/injector/config"
+	"github.com/GuanceCloud/orchestrion/internal/integrations"
+	"github.com/GuanceCloud/orchestrion/internal/version"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"golang.org/x/mod/semver"
@@ -44,7 +44,7 @@ func TestPin(t *testing.T) {
 		require.NoError(t, err)
 
 		rawTag, _ := version.TagInfo()
-		assert.Contains(t, data.Require, gomod.Require{Path: "github.com/DataDog/orchestrion", Version: rawTag})
+		assert.Contains(t, data.Require, gomod.Require{Path: "github.com/GuanceCloud/orchestrion", Version: rawTag})
 
 		content, err := os.ReadFile(filepath.Join(tmp, config.FilenameOrchestrionToolGo))
 		require.NoError(t, err)
@@ -58,7 +58,7 @@ func TestPin(t *testing.T) {
 package tools
 
 import (
-	_ "github.com/DataDog/orchestrion"
+	_ "github.com/GuanceCloud/orchestrion"
 	_ "gopkg.in/DataDog/dd-trace-go.v1"
 )
 `), 0o644))
@@ -91,7 +91,7 @@ func main() {}
 	})
 
 	t.Run("another-version", func(t *testing.T) {
-		tmp := scaffold(t, map[string]string{"github.com/DataDog/orchestrion": "v0.9.3"})
+		tmp := scaffold(t, map[string]string{"github.com/GuanceCloud/orchestrion": "v0.9.3"})
 		chdir(t, tmp)
 
 		require.NoError(t, PinOrchestrion(ctx, Options{Writer: io.Discard, ErrWriter: io.Discard}))
@@ -103,7 +103,7 @@ func main() {}
 		require.NoError(t, err)
 
 		rawTag, _ := version.TagInfo()
-		assert.Contains(t, data.Require, gomod.Require{Path: "github.com/DataDog/orchestrion", Version: rawTag})
+		assert.Contains(t, data.Require, gomod.Require{Path: "github.com/GuanceCloud/orchestrion", Version: rawTag})
 	})
 
 	t.Run("no-generate", func(t *testing.T) {
@@ -157,12 +157,12 @@ func main() {}
 	})
 }
 
-var goModTemplate = template.Must(template.New("go-mod").Parse(`module github.com/DataDog/orchestrion/pin-test
+var goModTemplate = template.Must(template.New("go-mod").Parse(`module github.com/GuanceCloud/orchestrion/pin-test
 
 go {{ .GoVersion }}
 
 replace (
-	github.com/DataDog/orchestrion {{ .OrchestrionVersion }} => {{ .OrchestrionPath }}
+	github.com/GuanceCloud/orchestrion {{ .OrchestrionVersion }} => {{ .OrchestrionPath }}
 )
 
 require (

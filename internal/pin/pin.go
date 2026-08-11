@@ -20,13 +20,13 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/DataDog/orchestrion/internal/ensure"
-	"github.com/DataDog/orchestrion/internal/filelock"
-	"github.com/DataDog/orchestrion/internal/goenv"
-	"github.com/DataDog/orchestrion/internal/gomod"
-	"github.com/DataDog/orchestrion/internal/injector/config"
-	"github.com/DataDog/orchestrion/internal/integrations"
-	"github.com/DataDog/orchestrion/internal/version"
+	"github.com/GuanceCloud/orchestrion/internal/ensure"
+	"github.com/GuanceCloud/orchestrion/internal/filelock"
+	"github.com/GuanceCloud/orchestrion/internal/goenv"
+	"github.com/GuanceCloud/orchestrion/internal/gomod"
+	"github.com/GuanceCloud/orchestrion/internal/injector/config"
+	"github.com/GuanceCloud/orchestrion/internal/integrations"
+	"github.com/GuanceCloud/orchestrion/internal/version"
 	"github.com/dave/dst"
 	"github.com/dave/dst/decorator"
 	"github.com/rs/zerolog"
@@ -34,7 +34,7 @@ import (
 	"golang.org/x/tools/go/packages"
 )
 
-const orchestrionImportPath = "github.com/DataDog/orchestrion"
+const orchestrionImportPath = "github.com/GuanceCloud/orchestrion"
 
 type Options struct {
 	// Writer is the writer to send output of the command to. Defaults to
@@ -235,7 +235,7 @@ func updateToolFile(file *dst.File) (*importSet, error) {
 // updateGoGenerateDirective adds, updates, or removes the `//go:generate`
 // directive from the [*dst.File] according to the receiving [*Options].
 func updateGoGenerateDirective(opts Options, file *dst.File) {
-	const prefix = "//go:generate go run github.com/DataDog/orchestrion pin"
+	const prefix = "//go:generate go run github.com/GuanceCloud/orchestrion pin"
 
 	newDirective := ""
 	if !opts.NoGenerate {

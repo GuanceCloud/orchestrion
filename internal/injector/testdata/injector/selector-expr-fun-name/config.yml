@@ -16,7 +16,7 @@ aspects:
     advice:
       - wrap-expression:
           imports:
-            client: github.com/DataDog/dd-trace-go/contrib/net/http/v2/client
+            client: github.com/GuanceCloud/dd-trace-go/contrib/net/http/v2/client
           template: |-
             {{- $ctx := .Function.ArgumentOfType "context.Context" -}}
             {{- if $ctx -}}
@@ -30,7 +30,7 @@ aspects:
             {{- end -}}
 
 syntheticReferences:
-  github.com/DataDog/dd-trace-go/contrib/net/http/v2/client: true
+  github.com/GuanceCloud/dd-trace-go/contrib/net/http/v2/client: true
 
 code: |-
   package example
