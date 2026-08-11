@@ -214,7 +214,7 @@ var goModTemplate = template.Must(template.New("go-mod").Parse(`module github.co
 go {{ .GoVersion }}
 
 replace (
-	github.com/GuanceCloud/orchestrion {{ .OrchestrionVersion }} => {{ .OrchestrionPath }}
+	github.com/GuanceCloud/orchestrion => {{ .OrchestrionPath }}
 )
 
 require (
