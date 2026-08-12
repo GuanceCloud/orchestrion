@@ -7,7 +7,7 @@ next: /docs/dd-trace-go/features
 
 Each integration's documentation page provides information on how to enable only this integration,
 which can be done by removing the import of
-{{<godoc import-path="github.com/DataDog/dd-trace-go/orchestrion/all/v2">}} from the
+{{<godoc import-path="github.com/GuanceCloud/dd-trace-go/orchestrion/all/v2">}} from the
 `orchestrion.tool.go` file, and replacing it with one or more specific package imports as specified
 in the documentation.
 

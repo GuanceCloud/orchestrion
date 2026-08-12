@@ -11,8 +11,8 @@ import (
 	"slices"
 	"strconv"
 
-	"github.com/DataDog/orchestrion/internal/injector/aspect"
-	"github.com/DataDog/orchestrion/internal/injector/aspect/may"
+	"github.com/GuanceCloud/orchestrion/internal/injector/aspect"
+	"github.com/GuanceCloud/orchestrion/internal/injector/aspect/may"
 	"github.com/dave/dst"
 	"github.com/dave/dst/dstutil"
 	"github.com/rs/zerolog"

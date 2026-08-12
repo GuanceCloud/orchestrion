@@ -6,16 +6,16 @@
 package config
 
 import (
-	"github.com/DataDog/orchestrion/internal/injector/aspect"
-	"github.com/DataDog/orchestrion/internal/injector/aspect/advice"
-	"github.com/DataDog/orchestrion/internal/injector/aspect/advice/code"
-	"github.com/DataDog/orchestrion/internal/injector/aspect/context"
-	"github.com/DataDog/orchestrion/internal/injector/aspect/join"
-	"github.com/DataDog/orchestrion/internal/injector/typed"
+	"github.com/GuanceCloud/orchestrion/internal/injector/aspect"
+	"github.com/GuanceCloud/orchestrion/internal/injector/aspect/advice"
+	"github.com/GuanceCloud/orchestrion/internal/injector/aspect/advice/code"
+	"github.com/GuanceCloud/orchestrion/internal/injector/aspect/context"
+	"github.com/GuanceCloud/orchestrion/internal/injector/aspect/join"
+	"github.com/GuanceCloud/orchestrion/internal/injector/typed"
 )
 
 var builtIn = configGo{
-	pkgPath: "github.com/DataDog/orchestrion",
+	pkgPath: "github.com/GuanceCloud/orchestrion",
 	yaml: &configYML{
 		aspects: []*aspect.Aspect{
 			{
@@ -24,7 +24,7 @@ var builtIn = configGo{
 				JoinPoint: join.AllOf(
 					join.ValueDeclaration(typed.Bool),
 					join.OneOf(
-						join.DeclarationOf("github.com/DataDog/orchestrion/runtime/built", "WithOrchestrion"),
+						join.DeclarationOf("github.com/GuanceCloud/orchestrion/runtime/built", "WithOrchestrion"),
 						join.Directive("orchestrion:enabled"),
 						join.Directive("dd:orchestrion-enabled"), // <- Deprecated
 					),
@@ -41,7 +41,7 @@ var builtIn = configGo{
 				JoinPoint: join.AllOf(
 					join.ValueDeclaration(typed.String),
 					join.OneOf(
-						join.DeclarationOf("github.com/DataDog/orchestrion/runtime/built", "WithOrchestrionVersion"),
+						join.DeclarationOf("github.com/GuanceCloud/orchestrion/runtime/built", "WithOrchestrionVersion"),
 						join.Directive("orchestrion:version"),
 					),
 				),
@@ -54,7 +54,7 @@ var builtIn = configGo{
 		},
 		name: "<built-in>",
 		meta: configYMLMeta{
-			name:        "github.com/DataDog/orchestrion/built & //orchestrion: pragmas",
+			name:        "github.com/GuanceCloud/orchestrion/built & //orchestrion: pragmas",
 			description: "Provide runtime visibility into whether orchestrion built an application or not",
 			icon:        "cog",
 			caveats: "This aspect allows introducing conditional logic based on whether" +

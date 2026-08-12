@@ -14,7 +14,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/DataDog/orchestrion/internal/gomod"
+	"github.com/GuanceCloud/orchestrion/internal/gomod"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"golang.org/x/mod/semver"
@@ -459,8 +459,8 @@ func TestFetchShippedVersions(t *testing.T) {
 		// Should contain dd-trace-go keys
 		// Note: We can't assert exact versions as they change with each release
 		for _, key := range []string{
-			"github.com/DataDog/dd-trace-go/v2",
-			"github.com/DataDog/dd-trace-go/orchestrion/all/v2",
+			"github.com/GuanceCloud/dd-trace-go/v2",
+			"github.com/GuanceCloud/dd-trace-go/orchestrion/all/v2",
 		} {
 			version, exists := versions[key]
 			assert.True(t, exists, "expected key %q to exist", key)
@@ -475,13 +475,13 @@ func TestFetchShippedVersions(t *testing.T) {
 		tempDir := t.TempDir()
 		testGoMod := filepath.Join(tempDir, "go.mod")
 		require.NoError(t, os.WriteFile(testGoMod, []byte(`module test
-require github.com/DataDog/dd-trace-go/v2 v2.3.0
+require github.com/GuanceCloud/dd-trace-go/v2 v2.3.0
 `), 0644))
 
 		versions := loadShippedVersions(tempDir)
 
-		v2Version := versions["github.com/DataDog/dd-trace-go/v2"]
-		allVersion := versions["github.com/DataDog/dd-trace-go/orchestrion/all/v2"]
+		v2Version := versions["github.com/GuanceCloud/dd-trace-go/v2"]
+		allVersion := versions["github.com/GuanceCloud/dd-trace-go/orchestrion/all/v2"]
 
 		require.NotEmpty(t, v2Version)
 		require.NotEmpty(t, allVersion)
@@ -514,7 +514,7 @@ func TestRequiredIntegrationsEdgeCases(t *testing.T) {
 func TestRequiredIntegrationsReplaceDirective(t *testing.T) {
 	// Test that the Replace directive is correctly generated with proper NewPath and NewVersion
 	t.Run("replace-when-current-differs-from-shipped", func(t *testing.T) {
-		modPath := "github.com/DataDog/dd-trace-go/v2"
+		modPath := "github.com/GuanceCloud/dd-trace-go/v2"
 		withShippedVersions(t, map[string]string{
 			modPath: "v2.5.0",
 		})
@@ -547,7 +547,7 @@ func TestRequiredIntegrationsReplaceDirective(t *testing.T) {
 	})
 
 	t.Run("no-replace-when-current-equals-shipped", func(t *testing.T) {
-		modPath := "github.com/DataDog/dd-trace-go/v2"
+		modPath := "github.com/GuanceCloud/dd-trace-go/v2"
 		withShippedVersions(t, map[string]string{
 			modPath: "v2.5.0",
 		})
@@ -577,7 +577,7 @@ func TestRequiredIntegrationsReplaceDirective(t *testing.T) {
 
 	t.Run("replace-with-pseudo-version", func(t *testing.T) {
 		// Test the exact scenario from the error report
-		modPath := "github.com/DataDog/dd-trace-go/v2"
+		modPath := "github.com/GuanceCloud/dd-trace-go/v2"
 		pseudoVersion := "v2.4.0-dev.0.20250911151540-94e598897591"
 		withShippedVersions(t, map[string]string{
 			modPath: "v2.2.3",

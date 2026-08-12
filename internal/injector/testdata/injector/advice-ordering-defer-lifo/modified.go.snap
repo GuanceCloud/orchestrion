@@ -4,8 +4,8 @@ package test
 import (
   "context"
 //line <generated>:1
-  __orchestrion_tracer "github.com/DataDog/dd-trace-go/v2/ddtrace/tracer"
-  __orchestrion_errortrace "github.com/DataDog/dd-trace-go/v2/instrumentation/errortrace"
+  __orchestrion_tracer "github.com/GuanceCloud/dd-trace-go/v2/ddtrace/tracer"
+  __orchestrion_errortrace "github.com/GuanceCloud/dd-trace-go/v2/instrumentation/errortrace"
 )
 
 //line input.go:7

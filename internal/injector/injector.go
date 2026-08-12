@@ -17,12 +17,12 @@ import (
 	"go/types"
 	"sync"
 
-	"github.com/DataDog/dd-trace-go/v2/ddtrace/tracer"
-	"github.com/DataDog/orchestrion/internal/injector/aspect"
-	"github.com/DataDog/orchestrion/internal/injector/aspect/advice"
-	"github.com/DataDog/orchestrion/internal/injector/aspect/context"
-	"github.com/DataDog/orchestrion/internal/injector/parse"
-	"github.com/DataDog/orchestrion/internal/injector/typed"
+	"github.com/GuanceCloud/dd-trace-go/v2/ddtrace/tracer"
+	"github.com/GuanceCloud/orchestrion/internal/injector/aspect"
+	"github.com/GuanceCloud/orchestrion/internal/injector/aspect/advice"
+	"github.com/GuanceCloud/orchestrion/internal/injector/aspect/context"
+	"github.com/GuanceCloud/orchestrion/internal/injector/parse"
+	"github.com/GuanceCloud/orchestrion/internal/injector/typed"
 	"github.com/dave/dst"
 	"github.com/dave/dst/decorator"
 	"github.com/dave/dst/decorator/resolver"
@@ -87,7 +87,7 @@ type (
 // information. It does not contain entries for unmodified files.
 func (i *Injector) InjectFiles(ctx gocontext.Context, files []string, aspects []*aspect.Aspect) (_ map[string]InjectedFile, _ context.GoLangVersion, err error) {
 	span, ctx := tracer.StartSpanFromContext(ctx, "InjectFiles",
-		tracer.ServiceName("github.com/DataDog/orchestrion/internal/injector"),
+		tracer.ServiceName("github.com/GuanceCloud/orchestrion/internal/injector"),
 		tracer.ResourceName(i.ImportPath),
 	)
 	defer func() { span.Finish(tracer.WithError(err)) }()

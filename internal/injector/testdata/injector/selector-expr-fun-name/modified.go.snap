@@ -5,7 +5,7 @@ import (
   "context"
   "net/http"
 //line <generated>:1
-  __orchestrion_client "github.com/DataDog/dd-trace-go/contrib/net/http/v2/client"
+  __orchestrion_client "github.com/GuanceCloud/dd-trace-go/contrib/net/http/v2/client"
 )
 
 //line input.go:8

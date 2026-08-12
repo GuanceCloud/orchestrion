@@ -10,10 +10,10 @@ import (
 	"os/exec"
 	"strings"
 
-	"github.com/DataDog/dd-trace-go/v2/ddtrace/tracer"
-	"github.com/DataDog/orchestrion/internal/binpath"
-	"github.com/DataDog/orchestrion/internal/goproxy"
-	"github.com/DataDog/orchestrion/internal/pin"
+	"github.com/GuanceCloud/dd-trace-go/v2/ddtrace/tracer"
+	"github.com/GuanceCloud/orchestrion/internal/binpath"
+	"github.com/GuanceCloud/orchestrion/internal/goproxy"
+	"github.com/GuanceCloud/orchestrion/internal/pin"
 	"github.com/urfave/cli/v2"
 )
 

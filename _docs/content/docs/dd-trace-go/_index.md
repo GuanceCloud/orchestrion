@@ -8,7 +8,7 @@ next: /docs/dd-trace-go/integrations
 ## Default configuration
 
 Orchestrion is complemented by the Datadog tracing library,
-{{<godoc import-path="github.com/DataDog/dd-trace-go/v2">}}. It provides
+{{<godoc import-path="github.com/GuanceCloud/dd-trace-go/v2">}}. It provides
 compile-time integrations for many popular Go libraries; and is enabled by
 default when running `orchestrion pin`.
 
@@ -19,7 +19,7 @@ looking like this:
 ```go
 //go:build tools
 
-//go:generate go run github.com/DataDog/orchestrion pin
+//go:generate go run github.com/GuanceCloud/orchestrion pin
 
 package tools
 
@@ -32,18 +32,18 @@ package tools
 import (
 	// Ensures `orchestrion` is present in `go.mod` so that builds are repeatable.
 	// Do not remove.
-	_ "github.com/DataDog/orchestrion"
+	_ "github.com/GuanceCloud/orchestrion"
 
 	// Provides integrations for essential `orchestrion` features. Most users
 	// should not remove this integration.
-	_ "github.com/DataDog/dd-trace-go/orchestrion/all/v2" // integration
+	_ "github.com/GuanceCloud/dd-trace-go/orchestrion/all/v2" // integration
 )
 ```
 
 ## Choosing integrations
 
 Once `orchestrion pin` has been run, you can replace the import of
-{{<godoc import-path="github.com/DataDog/dd-trace-go/orchestrion/all/v2">}} with
+{{<godoc import-path="github.com/GuanceCloud/dd-trace-go/orchestrion/all/v2">}} with
 imports for specific integration packages (see the [Integrations](./v2) section
 for a list of available packages).
 
@@ -53,7 +53,7 @@ as well as `net/http` clients and servers:
 ```go
 //go:build tools
 
-//go:generate go run github.com/DataDog/orchestrion pin
+//go:generate go run github.com/GuanceCloud/orchestrion pin
 
 package tools
 
@@ -66,7 +66,7 @@ package tools
 import (
 	// Ensures `orchestrion` is present in `go.mod` so that builds are repeatable.
 	// Do not remove.
-	_ "github.com/DataDog/orchestrion"
+	_ "github.com/GuanceCloud/orchestrion"
 
 	// Provides integrations for essential `orchestrion` features. Most users
 	// should not remove this integration.

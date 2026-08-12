@@ -13,7 +13,7 @@ import (
 	"errors"
 	"log"
 //line <generated>:1
-	__orchestrion_v2 "github.com/DataDog/dd-trace-go/contrib/database/sql/v2"
+	__orchestrion_v2 "github.com/GuanceCloud/dd-trace-go/contrib/database/sql/v2"
 )
 
 //line samples/server/database.go:16

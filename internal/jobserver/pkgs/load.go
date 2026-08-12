@@ -9,8 +9,8 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/DataDog/dd-trace-go/v2/ddtrace/tracer"
-	"github.com/DataDog/orchestrion/internal/goflags"
+	"github.com/GuanceCloud/dd-trace-go/v2/ddtrace/tracer"
+	"github.com/GuanceCloud/orchestrion/internal/goflags"
 	"github.com/rs/zerolog"
 	"golang.org/x/tools/go/packages"
 )

@@ -11,9 +11,9 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/DataDog/orchestrion/internal/injector/aspect/context"
-	"github.com/DataDog/orchestrion/internal/jobserver"
-	"github.com/DataDog/orchestrion/internal/jobserver/client"
+	"github.com/GuanceCloud/orchestrion/internal/injector/aspect/context"
+	"github.com/GuanceCloud/orchestrion/internal/jobserver"
+	"github.com/GuanceCloud/orchestrion/internal/jobserver/client"
 	"github.com/stretchr/testify/require"
 )
 
@@ -76,7 +76,7 @@ func TestParseCompile(t *testing.T) {
 		}
 
 		t.Run(name, func(t *testing.T) {
-			cmd, err := parseCompileCommand(gocontext.Background(), "github.com/DataDog/orchestrion.test/"+name, tc.input)
+			cmd, err := parseCompileCommand(gocontext.Background(), "github.com/GuanceCloud/orchestrion.test/"+name, tc.input)
 			require.NoError(t, err)
 			require.Equal(t, CommandTypeCompile, cmd.Type())
 			require.Equal(t, tc.flags, cmd.Flags)
@@ -116,7 +116,7 @@ func TestSetLang(t *testing.T) {
 	work := t.TempDir()
 
 	t.Run("-lang go1.13", func(t *testing.T) {
-		cmd, err := parseCompileCommand(gocontext.Background(), "github.com/DataDog/orchestrion.test", []string{
+		cmd, err := parseCompileCommand(gocontext.Background(), "github.com/GuanceCloud/orchestrion.test", []string{
 			"/path/to/compile",
 			"-o", work + "/b002/a.out",
 			"-lang", "go1.13",
@@ -133,7 +133,7 @@ func TestSetLang(t *testing.T) {
 	})
 
 	t.Run("-lang go1.23", func(t *testing.T) {
-		cmd, err := parseCompileCommand(gocontext.Background(), "github.com/DataDog/orchestrion.test", []string{
+		cmd, err := parseCompileCommand(gocontext.Background(), "github.com/GuanceCloud/orchestrion.test", []string{
 			"/path/to/compile",
 			"-o", work + "/b002/a.out",
 			"-lang", "go1.23",
@@ -150,7 +150,7 @@ func TestSetLang(t *testing.T) {
 	})
 
 	t.Run("-lang=go1.13", func(t *testing.T) {
-		cmd, err := parseCompileCommand(gocontext.Background(), "github.com/DataDog/orchestrion.test", []string{
+		cmd, err := parseCompileCommand(gocontext.Background(), "github.com/GuanceCloud/orchestrion.test", []string{
 			"/path/to/compile",
 			"-o", work + "/b002/a.out",
 			"-lang=go1.13",
@@ -172,7 +172,7 @@ func TestSetLang(t *testing.T) {
 			"source/file.go",
 		}
 
-		cmd, err := parseCompileCommand(gocontext.Background(), "github.com/DataDog/orchestrion.test", args)
+		cmd, err := parseCompileCommand(gocontext.Background(), "github.com/GuanceCloud/orchestrion.test", args)
 		require.NoError(t, err)
 
 		require.NoError(t, cmd.SetLang(context.GoLangVersion{}))

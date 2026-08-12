@@ -11,7 +11,7 @@ import (
 
 	"github.com/gocql/gocql"
 //line <generated>:1
-	__orchestrion_gocqltrace "github.com/DataDog/dd-trace-go/contrib/gocql/gocql/v2"
+	__orchestrion_gocqltrace "github.com/GuanceCloud/dd-trace-go/contrib/gocql/gocql/v2"
 )
 
 //line samples/client/gocql.go:14

@@ -13,7 +13,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/DataDog/orchestrion/internal/injector/lineinfo"
+	"github.com/GuanceCloud/orchestrion/internal/injector/lineinfo"
 	"github.com/dave/dst"
 	"github.com/dave/dst/decorator"
 	"github.com/rs/zerolog"

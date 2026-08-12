@@ -17,8 +17,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/DataDog/dd-trace-go/v2/ddtrace/tracer"
-	"github.com/DataDog/orchestrion/internal/injector/aspect"
+	"github.com/GuanceCloud/dd-trace-go/v2/ddtrace/tracer"
+	"github.com/GuanceCloud/orchestrion/internal/injector/aspect"
 	"golang.org/x/tools/go/packages"
 )
 
@@ -28,7 +28,7 @@ var ErrInvalidGoPackage = errors.New("no .go files in package")
 
 // loadGoPackage loads configuration from the specified go package.
 func (l *Loader) loadGoPackage(ctx context.Context, pkg *packages.Package) (_ *configGo, err error) {
-	// Special-case the `github.com/DataDog/orchestrion` package, we need not
+	// Special-case the `github.com/GuanceCloud/orchestrion` package, we need not
 	// parse this one, and should always use the built-in object.
 	if pkg.PkgPath == builtIn.pkgPath {
 		return &builtIn, nil

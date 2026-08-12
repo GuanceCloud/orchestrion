@@ -14,10 +14,10 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/DataDog/orchestrion/internal/goflags"
-	"github.com/DataDog/orchestrion/internal/jobserver"
-	"github.com/DataDog/orchestrion/internal/jobserver/client"
-	"github.com/DataDog/orchestrion/internal/jobserver/pkgs"
+	"github.com/GuanceCloud/orchestrion/internal/goflags"
+	"github.com/GuanceCloud/orchestrion/internal/jobserver"
+	"github.com/GuanceCloud/orchestrion/internal/jobserver/client"
+	"github.com/GuanceCloud/orchestrion/internal/jobserver/pkgs"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

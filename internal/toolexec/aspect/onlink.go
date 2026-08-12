@@ -11,11 +11,11 @@ import (
 	"os"
 	"sort"
 
-	"github.com/DataDog/dd-trace-go/v2/ddtrace/tracer"
-	"github.com/DataDog/orchestrion/internal/jobserver/pkgs"
-	"github.com/DataDog/orchestrion/internal/toolexec/aspect/linkdeps"
-	"github.com/DataDog/orchestrion/internal/toolexec/importcfg"
-	"github.com/DataDog/orchestrion/internal/toolexec/proxy"
+	"github.com/GuanceCloud/dd-trace-go/v2/ddtrace/tracer"
+	"github.com/GuanceCloud/orchestrion/internal/jobserver/pkgs"
+	"github.com/GuanceCloud/orchestrion/internal/toolexec/aspect/linkdeps"
+	"github.com/GuanceCloud/orchestrion/internal/toolexec/importcfg"
+	"github.com/GuanceCloud/orchestrion/internal/toolexec/proxy"
 	"github.com/rs/zerolog"
 )
 

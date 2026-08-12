@@ -15,11 +15,11 @@ import (
 	"sync"
 	"time"
 
-	"github.com/DataDog/orchestrion/internal/jobserver/buildid"
-	"github.com/DataDog/orchestrion/internal/jobserver/client"
-	"github.com/DataDog/orchestrion/internal/jobserver/common"
-	"github.com/DataDog/orchestrion/internal/jobserver/nbt"
-	"github.com/DataDog/orchestrion/internal/jobserver/pkgs"
+	"github.com/GuanceCloud/orchestrion/internal/jobserver/buildid"
+	"github.com/GuanceCloud/orchestrion/internal/jobserver/client"
+	"github.com/GuanceCloud/orchestrion/internal/jobserver/common"
+	"github.com/GuanceCloud/orchestrion/internal/jobserver/nbt"
+	"github.com/GuanceCloud/orchestrion/internal/jobserver/pkgs"
 	"github.com/nats-io/nats-server/v2/server"
 	"github.com/nats-io/nats.go"
 	"github.com/rs/zerolog"
@@ -95,7 +95,7 @@ func New(ctx context.Context, opts *Options) (srv *Server, err error) {
 	systemAccount := server.NewAccount("SYS")
 
 	server, err := server.NewServer(&server.Options{
-		ServerName: fmt.Sprintf("github.com/DataDog/orchestrion/internal/jobserver[%d]", os.Getpid()),
+		ServerName: fmt.Sprintf("github.com/GuanceCloud/orchestrion/internal/jobserver[%d]", os.Getpid()),
 		Host:       getLoopback(log),
 		Port:       port,
 		DontListen: opts.NoListener,

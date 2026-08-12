@@ -73,7 +73,7 @@ is the case for:
 
 {{<callout type="info">}}
 This feature is provided by the core tracer integration:
-[`github.com/DataDog/dd-trace-go/v2/ddtrace/tracer`](../v2/ddtrace-tracer)
+[`github.com/GuanceCloud/dd-trace-go/v2/ddtrace/tracer`](../v2/ddtrace-tracer)
 {{</callout>}}
 
 Any function annotated with the `//dd:span` directive will result in a trace
@@ -152,9 +152,9 @@ are those that:
   will create a new trace root span if if did not already carry trace context
 - are returned by:
   - Tracer v1: {{<godoc import-path="gopkg.in/DataDog/dd-trace-go.v1/ddtrace/tracer" package="tracer" name="StartSpanFromContext" >}} /
-    Tracer v2: {{<godoc import-path="github.com/DataDog/dd-trace-go/v2/ddtrace/tracer" package="tracer" name="StartSpanFromContext" >}}
+    Tracer v2: {{<godoc import-path="github.com/GuanceCloud/dd-trace-go/v2/ddtrace/tracer" package="tracer" name="StartSpanFromContext" >}}
   - Tracer v1: {{<godoc import-path="gopkg.in/DataDog/dd-trace-go.v1/ddtrace/tracer" package="tracer" name="ContextWithSpan" >}} /
-    Tracer v2: {{<godoc import-path="github.com/DataDog/dd-trace-go/v2/ddtrace/tracer" package="tracer" name="ContextWithSpan" >}}
+    Tracer v2: {{<godoc import-path="github.com/GuanceCloud/dd-trace-go/v2/ddtrace/tracer" package="tracer" name="ContextWithSpan" >}}
 
 ```go
 package demo
@@ -178,12 +178,12 @@ func callee(ctx context.Context, done chan<- struct{}) {
 ### Manual Instrumentation
 
 The {{<godoc import-path="gopkg.in/DataDog/dd-trace-go.v1">}} or
-{{<godoc import-path="github.com/DataDog/dd-trace-go/v2">}} library can be
+{{<godoc import-path="github.com/GuanceCloud/dd-trace-go/v2">}} library can be
 used to manually instrument sections of your code even when building with
 `orchestrion`.
 
 You can use APIs such as {{<godoc import-path="gopkg.in/DataDog/dd-trace-go.v1/ddtrace/tracer" package="tracer" name="StartSpanFromContext" >}}
-(in v2: {{<godoc import-path="github.com/DataDog/dd-trace-go/v2/ddtrace/tracer" package="tracer" name="StartSpanFromContext" >}})
+(in v2: {{<godoc import-path="github.com/GuanceCloud/dd-trace-go/v2/ddtrace/tracer" package="tracer" name="StartSpanFromContext" >}})
 to create spans in any section of your code. This can be useful to delimit a
 specific section of your code with a span without having to refactor it in a
 separate function (which would allow the use of the `//dd:span` directive), or
@@ -192,13 +192,13 @@ when you need to customize the span more than the `//dd:span` directive allows.
 {{<callout emoji="⚠️">}}
 You may also use integrations from the packages within
 {{<godoc import-path="gopkg.in/DataDog/dd-trace-go.v1/contrib">}} or
-{{<godoc import-path="github.com/DataDog/dd-trace-go/v2/contrib">}}, although
+{{<godoc import-path="github.com/GuanceCloud/dd-trace-go/v2/contrib">}}, although
 this may result in duplicated trace spans if `orchestrion` supports automatic
 instrumentation of the same integration.
 
 This can be useful to instrument calls that `orchestrion` does not yet support.
 If you directly use integrations, we encourage you carefully review the
-[release notes](https://github.com/DataDog/orchestrion/releases) before
+[release notes](https://github.com/GuanceCloud/orchestrion/releases) before
 upgrading to a new `orchestrion` release, so you can remove manual
 instrumentation that was made redundant as necessary.
 {{</callout>}}

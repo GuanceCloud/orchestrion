@@ -10,8 +10,8 @@
 package main
 
 import (
-	_ "github.com/DataDog/orchestrion"
-	_ "github.com/DataDog/orchestrion/instrument"
+	_ "github.com/GuanceCloud/orchestrion"
+	_ "github.com/GuanceCloud/orchestrion/instrument"
 
 	// Packages not directly imported by the integrations, but implied by them,
 	// when we therefore need to be able to resolve when generating the

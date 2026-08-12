@@ -14,14 +14,14 @@ import (
 // applied, stopping evaluation of any further overrides.
 var weavingSpecialCase = []specialCase{
 	// Weaving inside of orchestrion packages themselves
-	{path: "github.com/DataDog/orchestrion/runtime", prefix: true, behavior: NoOverride},
-	{path: "github.com/DataDog/orchestrion", prefix: true, behavior: NeverWeave},
+	{path: "github.com/GuanceCloud/orchestrion/runtime", prefix: true, behavior: NoOverride},
+	{path: "github.com/GuanceCloud/orchestrion", prefix: true, behavior: NeverWeave},
 	// V1 of the Datadog Go tracer library
 	{path: "gopkg.in/DataDog/dd-trace-go.v1", prefix: true, behavior: WeaveTracerInternal},
 	// V2 of the Datadog Go tracer library
-	{path: "github.com/DataDog/dd-trace-go/internal/orchestrion/_integration", prefix: true, behavior: NoOverride},    // The dd-trace-go integration test suite
-	{path: "github.com/DataDog/dd-trace-go/v2/internal/orchestrion/_integration", prefix: true, behavior: NoOverride}, // The dd-trace-go integration test suite
-	{path: "github.com/DataDog/dd-trace-go", prefix: true, behavior: WeaveTracerInternal},
+	{path: "github.com/GuanceCloud/dd-trace-go/internal/orchestrion/_integration", prefix: true, behavior: NoOverride},    // The dd-trace-go integration test suite
+	{path: "github.com/GuanceCloud/dd-trace-go/v2/internal/orchestrion/_integration", prefix: true, behavior: NoOverride}, // The dd-trace-go integration test suite
+	{path: "github.com/GuanceCloud/dd-trace-go", prefix: true, behavior: WeaveTracerInternal},
 	// Misc. other Datadog packages that can cause circular weaving to happen
 	{path: "github.com/DataDog/go-tuf/client", prefix: false, behavior: NeverWeave},
 }

@@ -19,11 +19,11 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/DataDog/orchestrion/internal/injector"
-	"github.com/DataDog/orchestrion/internal/injector/aspect"
-	"github.com/DataDog/orchestrion/internal/injector/aspect/context"
-	"github.com/DataDog/orchestrion/internal/injector/typed"
-	"github.com/DataDog/orchestrion/internal/yaml"
+	"github.com/GuanceCloud/orchestrion/internal/injector"
+	"github.com/GuanceCloud/orchestrion/internal/injector/aspect"
+	"github.com/GuanceCloud/orchestrion/internal/injector/aspect/context"
+	"github.com/GuanceCloud/orchestrion/internal/injector/typed"
+	"github.com/GuanceCloud/orchestrion/internal/yaml"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"golang.org/x/tools/go/packages"
@@ -85,8 +85,8 @@ func Test(t *testing.T) {
 
 			runGo(t, tmp, "mod", "init", testModuleName)
 			runGo(t, tmp, "mod", "edit",
-				"-replace=github.com/DataDog/orchestrion="+rootDir,
-				"-replace=github.com/DataDog/orchestrion/instrument="+filepath.Join(rootDir, "instrument"),
+				"-replace=github.com/GuanceCloud/orchestrion="+rootDir,
+				"-replace=github.com/GuanceCloud/orchestrion/instrument="+filepath.Join(rootDir, "instrument"),
 			)
 
 			inputFile := filepath.Join(tmp, "input.go")

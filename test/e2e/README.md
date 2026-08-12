@@ -16,7 +16,7 @@ test/e2e/
 └── [your]_test.go      # Add new test files here
 ```
 
-All tests use the root `github.com/DataDog/orchestrion` module - no separate modules needed!
+All tests use the root `github.com/GuanceCloud/orchestrion` module - no separate modules needed!
 
 ## Running Tests
 
@@ -42,15 +42,15 @@ go test -tags=e2e -v .
    ```bash
    mkdir test/e2e/my-test
    cd test/e2e/my-test
-   go mod init github.com/DataDog/orchestrion/test/e2e/my-test
+   go mod init github.com/GuanceCloud/orchestrion/test/e2e/my-test
    ```
 
 2. **Add dependencies:**
 
    ```bash
-   go mod edit -require=github.com/DataDog/orchestrion/test/e2e@v0.0.0
-   go mod edit -replace=github.com/DataDog/orchestrion/test/e2e=..
-   go mod edit -replace=github.com/DataDog/orchestrion=../../..
+   go mod edit -require=github.com/GuanceCloud/orchestrion/test/e2e@v0.0.0
+   go mod edit -replace=github.com/GuanceCloud/orchestrion/test/e2e=..
+   go mod edit -replace=github.com/GuanceCloud/orchestrion=../../..
    go mod tidy
    ```
 
@@ -63,7 +63,7 @@ go test -tags=e2e -v .
 
    import (
        "testing"
-       helpers "github.com/DataDog/orchestrion/test/e2e"
+       helpers "github.com/GuanceCloud/orchestrion/test/e2e"
    )
 
    func TestMyTest(t *testing.T) {

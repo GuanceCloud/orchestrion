@@ -10,8 +10,8 @@ import (
 	"fmt"
 	"go/version"
 
-	"github.com/DataDog/orchestrion/internal/fingerprint"
-	"github.com/DataDog/orchestrion/internal/yaml"
+	"github.com/GuanceCloud/orchestrion/internal/fingerprint"
+	"github.com/GuanceCloud/orchestrion/internal/yaml"
 	"github.com/goccy/go-yaml/ast"
 )
 

@@ -4,7 +4,7 @@
 [![Project Documentation](https://img.shields.io/badge/Project%20Documentation-datadoghq.dev/orchestrion-blue.svg?logo=github&&labelColor=181717&style=flat)](https://datadoghq.dev/orchestrion)
 ![Latest Release](https://img.shields.io/github/v/release/DataDog/orchestrion?display_name=tag&label=Latest%20Release)
 ![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/datadog/orchestrion)
-[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/DataDog/orchestrion/badge)](https://scorecard.dev/viewer/?uri=github.com/DataDog/orchestrion)
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/GuanceCloud/orchestrion/badge)](https://scorecard.dev/viewer/?uri=github.com/GuanceCloud/orchestrion)
 
 Automatic compile-time instrumentation of Go code.
 
@@ -19,8 +19,8 @@ is driven by the imports present in the `orchestrion.tool.go` file at the projec
 > For support & general questions, you are welcome to use [GitHub discussions][gh-discussions]. You may also contact us
 > privately via Datadog support.
 >
-> [gh-issues]: https://github.com/DataDog/orchestrion/issues/new/choose
-> [gh-discussions]: https://github.com/DataDog/orchestrion/discussions
+> [gh-issues]: https://github.com/GuanceCloud/orchestrion/issues/new/choose
+> [gh-discussions]: https://github.com/GuanceCloud/orchestrion/discussions
 
 ## Requirements
 
@@ -40,14 +40,14 @@ Information on how to get started quickly with orchestrion can be found on the [
 
 ## Datadog Tracer Integrations
 
-Importing `github.com/DataDog/dd-trace-go/v2` in the project root's
+Importing `github.com/GuanceCloud/dd-trace-go/v2` in the project root's
 `orchestrion.tool.go` file enables automatic instrumentation of all supported integrations, which are listed on the
 [documentation site][docsite]. You can cherry-pick which integrations are enabled by `orchestrion` by importing the
 desired integrations' package paths instead of importing the tracer's root module.
 
 > [!TIP]
 > Orchestrion is a vendor-agnostic tool. By default, `orchestrion pin` enables Datadog's tracer integrations by
-> importing `github.com/DataDog/dd-trace-go/v2` in `orchestrion.tool.go`, but other vendors (such as OpenTelemetry) may
+> importing `github.com/GuanceCloud/dd-trace-go/v2` in `orchestrion.tool.go`, but other vendors (such as OpenTelemetry) may
 > provide alternate integrations that can be used instead.
 
 [docsite]: https://docs.datadoghq.com/tracing/trace_collection/compatibility/go/?tab=v1

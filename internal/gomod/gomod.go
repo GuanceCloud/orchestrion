@@ -27,6 +27,8 @@ type (
 		Toolchain Toolchain
 		// Require is a list of all `require` directives' contents.
 		Require []Require
+		// Replace is a list of all `replace` directives' contents.
+		Replace []Replacement
 	}
 
 	// Edit represents an edition that can be made to a `go.mod` file via `go mod edit`.
@@ -45,6 +47,18 @@ type (
 		Version string
 	}
 
+	// Module identifies a module path and optional version in a go.mod file.
+	Module struct {
+		Path    string
+		Version string
+	}
+
+	// Replacement represents a parsed replace directive.
+	Replacement struct {
+		Old Module
+		New Module
+	}
+
 	// Replace represents the target of a `replace` directive entry.
 	Replace struct {
 		// OldPath is the path of the module being replaced.
@@ -55,6 +69,15 @@ type (
 		NewPath string
 		// NewVersion is the version of the replacement module, if any.
 		NewVersion string
+	}
+
+	// DropRequire removes a require directive for the given module path.
+	DropRequire string
+
+	// DropReplace removes a replace directive for a module path and optional version.
+	DropReplace struct {
+		Path    string
+		Version string
 	}
 )
 
@@ -187,4 +210,16 @@ func (r Replace) goModEditFlag() string {
 		new += "@" + r.NewVersion
 	}
 	return fmt.Sprintf("-replace=%s=%s", old, new)
+}
+
+func (r DropRequire) goModEditFlag() string {
+	return "-droprequire=" + string(r)
+}
+
+func (r DropReplace) goModEditFlag() string {
+	old := r.Path
+	if r.Version != "" {
+		old += "@" + r.Version
+	}
+	return "-dropreplace=" + old
 }

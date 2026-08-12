@@ -28,7 +28,7 @@ aspects:
 syntheticReferences:
   time: true
 
-import-path: github.com/DataDog/orchestrion/internal/example
+import-path: github.com/GuanceCloud/orchestrion/internal/example
 
 code: |-
   package example

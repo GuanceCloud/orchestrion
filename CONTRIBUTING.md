@@ -68,9 +68,9 @@ commands:
 $ git clone github.com:DataDog/dd-trace-go         # Clone the DataDog/dd-trace-go repository
 $ cd dd-trace-go/internal/orchestrion/_integration # Move into the integration tests directory
 $ go mod edit \                                    # Use the local copy of orchestrion
-    -replace "github.com/DataDog/orchestrion=>${orchestrion_dir}"
+    -replace "github.com/GuanceCloud/orchestrion=>${orchestrion_dir}"
 $ go mod tidy                                      # Make sure go.mod & go.sum are up-to-date
-$ go run github.com/DataDog/orchestrion \          # Run integration test suite with orchestrion
+$ go run github.com/GuanceCloud/orchestrion \          # Run integration test suite with orchestrion
     go test -shuffle=on ./...
 ```
 
@@ -127,6 +127,6 @@ All formatting and linting checks are enforced in CI. Run `make format` and `mak
 your changes pass automated checks.
 
 <!-- Links -->
-[new-issue]: https://github.com/DataDog/orchestrion/issues/new/choose
+[new-issue]: https://github.com/GuanceCloud/orchestrion/issues/new/choose
 [conventional-commits]: https://www.conventionalcommits.org/en/v1.0.0/
-[dd-trace-go]: https://github.com/DataDog/dd-trace-go/internal/orchestrion/_integration
+[dd-trace-go]: https://github.com/GuanceCloud/dd-trace-go/internal/orchestrion/_integration

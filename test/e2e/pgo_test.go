@@ -16,13 +16,13 @@ import (
 	"testing"
 	"time"
 
-	"github.com/DataDog/orchestrion/test/e2e"
+	"github.com/GuanceCloud/orchestrion/test/e2e"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
 // TestPGO verifies that orchestrion works correctly with Profile-Guided Optimization.
-// This test validates the fix for https://github.com/DataDog/orchestrion/issues/653
+// This test validates the fix for https://github.com/GuanceCloud/orchestrion/issues/653
 func TestPGO(t *testing.T) {
 	if testing.Short() {
 		t.Skip("Skipping e2e PGO test in short mode")
@@ -52,7 +52,7 @@ func TestPGO(t *testing.T) {
 	log("")
 
 	log("=== PGO E2E Test ===")
-	log("Testing fix for https://github.com/DataDog/orchestrion/issues/653")
+	log("Testing fix for https://github.com/GuanceCloud/orchestrion/issues/653")
 	log("")
 
 	// Step 1: Build regular binary for profiling
@@ -106,7 +106,7 @@ func TestPGO(t *testing.T) {
 	// Step 4: Build with orchestrion AND PGO enabled (the critical test!)
 	log("")
 	log("Step 4: Building with orchestrion AND PGO enabled...")
-	log("  This tests the fix for https://github.com/DataDog/orchestrion/issues/653")
+	log("  This tests the fix for https://github.com/GuanceCloud/orchestrion/issues/653")
 
 	stepStart = time.Now()
 	orchestrionBinary := filepath.Join(workDir, "pgo-sample-orchestrion")

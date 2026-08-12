@@ -121,8 +121,8 @@ func TestSplitPackageAndName(t *testing.T) {
 		},
 		{
 			name:          "standard domain with version",
-			fullName:      "github.com/DataDog/dd-trace-go/v2.Tracer",
-			expectedPkg:   "github.com/DataDog/dd-trace-go/v2",
+			fullName:      "github.com/GuanceCloud/dd-trace-go/v2.Tracer",
+			expectedPkg:   "github.com/GuanceCloud/dd-trace-go/v2",
 			expectedLocal: "Tracer",
 		},
 		{

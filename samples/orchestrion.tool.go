@@ -10,7 +10,7 @@
 
 //go:build tools
 
-//go:generate go run github.com/DataDog/orchestrion pin
+//go:generate go run github.com/GuanceCloud/orchestrion pin
 
 package tools
 
@@ -23,9 +23,9 @@ package tools
 import (
 	// Ensures `orchestrion` is present in `go.mod` so that builds are repeatable.
 	// Do not remove.
-	_ "github.com/DataDog/orchestrion"
+	_ "github.com/GuanceCloud/orchestrion"
 
 	// Provides integrations for essential `orchestrion` features. Most users
 	// should not remove this integration.
-	_ "github.com/DataDog/orchestrion/instrument" // integration
+	_ "github.com/GuanceCloud/orchestrion/instrument" // integration
 )

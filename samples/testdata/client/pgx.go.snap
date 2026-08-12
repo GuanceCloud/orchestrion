@@ -12,7 +12,7 @@ import (
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 //line <generated>:1
-	__orchestrion_v2 "github.com/DataDog/dd-trace-go/contrib/jackc/pgx.v5/v2"
+	__orchestrion_v2 "github.com/GuanceCloud/dd-trace-go/contrib/jackc/pgx.v5/v2"
 )
 
 //line samples/client/pgx.go:15

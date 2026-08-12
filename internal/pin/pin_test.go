@@ -11,13 +11,14 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
+	"strings"
 	"testing"
 	"text/template"
 
-	"github.com/DataDog/orchestrion/internal/gomod"
-	"github.com/DataDog/orchestrion/internal/injector/config"
-	"github.com/DataDog/orchestrion/internal/integrations"
-	"github.com/DataDog/orchestrion/internal/version"
+	"github.com/GuanceCloud/orchestrion/internal/gomod"
+	"github.com/GuanceCloud/orchestrion/internal/injector/config"
+	"github.com/GuanceCloud/orchestrion/internal/integrations"
+	"github.com/GuanceCloud/orchestrion/internal/version"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"golang.org/x/mod/semver"
@@ -44,7 +45,7 @@ func TestPin(t *testing.T) {
 		require.NoError(t, err)
 
 		rawTag, _ := version.TagInfo()
-		assert.Contains(t, data.Require, gomod.Require{Path: "github.com/DataDog/orchestrion", Version: rawTag})
+		assert.Contains(t, data.Require, gomod.Require{Path: "github.com/GuanceCloud/orchestrion", Version: rawTag})
 
 		content, err := os.ReadFile(filepath.Join(tmp, config.FilenameOrchestrionToolGo))
 		require.NoError(t, err)
@@ -58,7 +59,7 @@ func TestPin(t *testing.T) {
 package tools
 
 import (
-	_ "github.com/DataDog/orchestrion"
+	_ "github.com/GuanceCloud/orchestrion"
 	_ "gopkg.in/DataDog/dd-trace-go.v1"
 )
 `), 0o644))
@@ -91,7 +92,7 @@ func main() {}
 	})
 
 	t.Run("another-version", func(t *testing.T) {
-		tmp := scaffold(t, map[string]string{"github.com/DataDog/orchestrion": "v0.9.3"})
+		tmp := scaffold(t, map[string]string{"github.com/GuanceCloud/orchestrion": "v0.9.3"})
 		chdir(t, tmp)
 
 		require.NoError(t, PinOrchestrion(ctx, Options{Writer: io.Discard, ErrWriter: io.Discard}))
@@ -103,7 +104,58 @@ func main() {}
 		require.NoError(t, err)
 
 		rawTag, _ := version.TagInfo()
-		assert.Contains(t, data.Require, gomod.Require{Path: "github.com/DataDog/orchestrion", Version: rawTag})
+		assert.Contains(t, data.Require, gomod.Require{Path: "github.com/GuanceCloud/orchestrion", Version: rawTag})
+	})
+
+	t.Run("migrate-upstream-pin", func(t *testing.T) {
+		tmp := scaffold(t, map[string]string{
+			legacyOrchestrionImportPath: "v1.11.0",
+			legacyTracerV2AllPath:       "v2.10.0-rc.5",
+		})
+		goMod := filepath.Join(tmp, "go.mod")
+		require.NoError(t, gomod.Run(ctx, "edit", goMod, io.Discard,
+			"-replace="+legacyTracerV2Path+"=github.com/GuanceCloud/dd-trace-go/v2@v2.10.0-ext",
+			"-replace="+legacyTracerV2AllPath+"=github.com/GuanceCloud/dd-trace-go/orchestrion/all/v2@v2.10.0-ext",
+		))
+
+		require.NoError(t, os.WriteFile(filepath.Join(tmp, config.FilenameOrchestrionToolGo), []byte(`//go:build tools
+
+//go:generate go run github.com/DataDog/orchestrion pin -generate
+
+package tools
+
+import (
+	_ "github.com/DataDog/orchestrion" // integration
+	_ "github.com/DataDog/dd-trace-go/orchestrion/all/v2" // integration
+)
+`), 0o644))
+		chdir(t, tmp)
+
+		require.NoError(t, PinOrchestrion(ctx, Options{Writer: io.Discard, ErrWriter: io.Discard}))
+
+		data, err := gomod.Parse(ctx, goMod)
+		require.NoError(t, err)
+		_, found := data.Requires(legacyOrchestrionImportPath)
+		assert.False(t, found)
+		_, found = data.Requires(legacyTracerV2AllPath)
+		assert.False(t, found)
+		for _, replacement := range data.Replace {
+			assert.False(t, strings.HasPrefix(replacement.Old.Path, "github.com/DataDog/dd-trace-go"))
+		}
+
+		content, err := os.ReadFile(filepath.Join(tmp, config.FilenameOrchestrionToolGo))
+		require.NoError(t, err)
+		assert.NotContains(t, string(content), "github.com/DataDog/orchestrion")
+		assert.NotContains(t, string(content), "github.com/DataDog/dd-trace-go")
+		assert.Contains(t, string(content), "//go:generate go run github.com/GuanceCloud/orchestrion pin -generate")
+		assert.Contains(t, string(content), integrations.DatadogTracerV2All)
+
+		require.NoError(t, PinOrchestrion(ctx, Options{Writer: io.Discard, ErrWriter: io.Discard}))
+		content, err = os.ReadFile(filepath.Join(tmp, config.FilenameOrchestrionToolGo))
+		require.NoError(t, err)
+		assert.Equal(t, 1, strings.Count(string(content), "//go:generate go run github.com/GuanceCloud/orchestrion pin -generate"))
+		assert.Equal(t, 1, strings.Count(string(content), `"`+orchestrionImportPath+`"`))
+		assert.Equal(t, 1, strings.Count(string(content), `"`+integrations.DatadogTracerV2All+`"`))
 	})
 
 	t.Run("no-generate", func(t *testing.T) {
@@ -157,12 +209,12 @@ func main() {}
 	})
 }
 
-var goModTemplate = template.Must(template.New("go-mod").Parse(`module github.com/DataDog/orchestrion/pin-test
+var goModTemplate = template.Must(template.New("go-mod").Parse(`module github.com/GuanceCloud/orchestrion/pin-test
 
 go {{ .GoVersion }}
 
 replace (
-	github.com/DataDog/orchestrion {{ .OrchestrionVersion }} => {{ .OrchestrionPath }}
+	github.com/GuanceCloud/orchestrion => {{ .OrchestrionPath }}
 )
 
 require (

@@ -76,7 +76,7 @@ func findRepoRoot() (string, error) {
 		gomodPath := filepath.Join(dir, "go.mod")
 		if data, err := os.ReadFile(gomodPath); err == nil {
 			// Check if this is the main orchestrion module
-			if strings.Contains(string(data), "module github.com/DataDog/orchestrion\n") {
+			if strings.Contains(string(data), "module github.com/GuanceCloud/orchestrion\n") {
 				return dir, nil
 			}
 		}
@@ -202,8 +202,8 @@ func CreateWorkDir(t *testing.T, testDir string) string {
 		content := string(data)
 		// Replace relative path with absolute path
 		// The testdata/pgo/go.mod uses ../../../../ (4 levels up from test/e2e/testdata/pgo to orchestrion root)
-		content = strings.ReplaceAll(content, "replace github.com/DataDog/orchestrion => ../../../..",
-			fmt.Sprintf("replace github.com/DataDog/orchestrion => %s", repoRoot))
+		content = strings.ReplaceAll(content, "replace github.com/GuanceCloud/orchestrion => ../../../..",
+			fmt.Sprintf("replace github.com/GuanceCloud/orchestrion => %s", repoRoot))
 		require.NoError(t, os.WriteFile(gomodPath, []byte(content), 0644))
 	}
 

@@ -1,4 +1,4 @@
-pkgpath: github.com/DataDog/orchestrion
+pkgpath: github.com/GuanceCloud/orchestrion
 yaml:
   name: <built-in>
   aspects:

@@ -21,8 +21,8 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/DataDog/orchestrion/internal/goenv"
-	"github.com/DataDog/orchestrion/internal/goflags/quoted"
+	"github.com/GuanceCloud/orchestrion/internal/goenv"
+	"github.com/GuanceCloud/orchestrion/internal/goflags/quoted"
 	"github.com/rs/zerolog"
 	"github.com/shirou/gopsutil/v4/process"
 	"golang.org/x/tools/go/packages"

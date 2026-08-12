@@ -12,7 +12,7 @@ import (
 	"strings"
 	"text/template"
 
-	"github.com/DataDog/dd-trace-go/v2/ddtrace/tracer"
+	"github.com/GuanceCloud/dd-trace-go/v2/ddtrace/tracer"
 	"github.com/polyfloyd/go-errorlint/errorlint"
 	"github.com/urfave/cli/v2"
 	"golang.org/x/tools/go/analysis"

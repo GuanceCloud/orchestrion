@@ -31,7 +31,7 @@
 1. Get the PR reviewed by a colleague, ensure all CI passes including the _Release_ validations
 1. Get the PR merged to `main` via the merge queue
 1. Once merged, a draft release will automatically be created on GitHub (see [.github/release.yml](.github/release.yml) for more details)
-   - Locate it on the [releases](https://github.com/DataDog/orchestrion/releases) page
+   - Locate it on the [releases](https://github.com/GuanceCloud/orchestrion/releases) page
    - Review the release notes, and edit them if necessary:
       - Remove `chore:` entries
       - Fix any typos you notice

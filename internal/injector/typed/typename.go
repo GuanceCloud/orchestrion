@@ -11,7 +11,7 @@ import (
 
 	"github.com/dave/dst"
 
-	"github.com/DataDog/orchestrion/internal/fingerprint"
+	"github.com/GuanceCloud/orchestrion/internal/fingerprint"
 )
 
 // Common built-in type definitions for convenience.

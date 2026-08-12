@@ -34,7 +34,7 @@ aspects:
 syntheticReferences:
   gopkg.in/DataDog/dd-trace-go.v1/ddtrace/tracer: true
 
-import-path: github.com/DataDog/orchestrion/internal/example
+import-path: github.com/GuanceCloud/orchestrion/internal/example
 
 code: |-
   package example

@@ -12,12 +12,12 @@ import (
 	"os/exec"
 	"strings"
 
-	"github.com/DataDog/dd-trace-go/v2/ddtrace/tracer"
-	"github.com/DataDog/orchestrion/internal/goenv"
-	"github.com/DataDog/orchestrion/internal/goflags"
-	"github.com/DataDog/orchestrion/internal/jobserver"
-	"github.com/DataDog/orchestrion/internal/jobserver/client"
-	"github.com/DataDog/orchestrion/internal/traceutil"
+	"github.com/GuanceCloud/dd-trace-go/v2/ddtrace/tracer"
+	"github.com/GuanceCloud/orchestrion/internal/goenv"
+	"github.com/GuanceCloud/orchestrion/internal/goflags"
+	"github.com/GuanceCloud/orchestrion/internal/jobserver"
+	"github.com/GuanceCloud/orchestrion/internal/jobserver/client"
+	"github.com/GuanceCloud/orchestrion/internal/traceutil"
 	"github.com/rs/zerolog"
 	"github.com/urfave/cli/v2"
 )

@@ -17,7 +17,7 @@ import (
 	"slices"
 	"strings"
 
-	"github.com/DataDog/orchestrion/internal/injector/config"
+	"github.com/GuanceCloud/orchestrion/internal/injector/config"
 	"golang.org/x/tools/go/packages"
 )
 
@@ -90,8 +90,8 @@ func (g *Generator) updateToolsFile(cfg config.Config) error {
 
 	pkgs, err := packages.Load(
 		&packages.Config{Mode: packages.NeedDeps | packages.NeedName},
-		"github.com/DataDog/orchestrion",
-		"github.com/DataDog/orchestrion/instrument",
+		"github.com/GuanceCloud/orchestrion",
+		"github.com/GuanceCloud/orchestrion/instrument",
 		"std",
 	)
 	if err != nil {
@@ -134,7 +134,7 @@ func (g *Generator) updateToolsFile(cfg config.Config) error {
 }
 
 func (g *Generator) renderPackage(pkgPath string, files []config.File) error {
-	if pkgPath == "github.com/DataDog/orchestrion" {
+	if pkgPath == "github.com/GuanceCloud/orchestrion" {
 		return nil
 	}
 

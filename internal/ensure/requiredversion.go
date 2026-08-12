@@ -12,13 +12,13 @@ import (
 	"path/filepath"
 	"runtime"
 
-	"github.com/DataDog/orchestrion/internal/goenv"
-	"github.com/DataDog/orchestrion/internal/version"
+	"github.com/GuanceCloud/orchestrion/internal/goenv"
+	"github.com/GuanceCloud/orchestrion/internal/version"
 	"github.com/rs/zerolog"
 	"golang.org/x/tools/go/packages"
 )
 
-const orchestrionPkgPath = "github.com/DataDog/orchestrion"
+const orchestrionPkgPath = "github.com/GuanceCloud/orchestrion"
 
 var orchestrionSrcDir string
 
@@ -26,7 +26,7 @@ var orchestrionSrcDir string
 // does not match the one required by `go.mod`.
 type IncorrectVersionError struct {
 	// RequiredVersion is the version declared in `go.mod`, or a blank string if a `replace` directive
-	// for "github.com/DataDog/orchestrion" is present in `go.mod`.
+	// for "github.com/GuanceCloud/orchestrion" is present in `go.mod`.
 	RequiredVersion string
 }
 
@@ -42,10 +42,10 @@ func RequiredVersion(ctx context.Context) error {
 
 func (e IncorrectVersionError) Error() string {
 	if e.RequiredVersion == "" {
-		return "orchestrion is diverted by a replace directive; please run `go install github.com/DataDog/orchestrion` before trying again"
+		return "orchestrion is diverted by a replace directive; please run `go install github.com/GuanceCloud/orchestrion` before trying again"
 	}
 	return fmt.Sprintf(
-		"orchestrion@%s is required by `go.mod`, but this is orchestrion@%s - please run `go install github.com/DataDog/orchestrion@%[1]s` before trying again",
+		"orchestrion@%s is required by `go.mod`, but this is orchestrion@%s - please run `go install github.com/GuanceCloud/orchestrion@%[1]s` before trying again",
 		e.RequiredVersion,
 		version.Tag(),
 	)
@@ -71,7 +71,7 @@ func requiredVersion(
 	return IncorrectVersionError{RequiredVersion: rVersion}
 }
 
-// goModVersion returns the version and path of the "github.com/DataDog/orchestrion" module that is
+// goModVersion returns the version and path of the "github.com/GuanceCloud/orchestrion" module that is
 // required in the specified directory's "go.mod" file. If dir is blank, the process' current
 // working directory is used. The version may be blank if a replace directive is in effect; in which
 // case the path value may indicate the location of the source code that is being used instead.

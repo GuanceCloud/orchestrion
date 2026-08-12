@@ -15,8 +15,8 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/DataDog/dd-trace-go/v2/ddtrace/tracer"
-	"github.com/DataDog/orchestrion/internal/injector/parse"
+	"github.com/GuanceCloud/dd-trace-go/v2/ddtrace/tracer"
+	"github.com/GuanceCloud/orchestrion/internal/injector/parse"
 )
 
 // typeCheck runs the Go type checker on the provided files, and returns the

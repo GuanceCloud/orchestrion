@@ -6,6 +6,6 @@ package integrations
 
 const (
 	DatadogTracerV1    = "gopkg.in/DataDog/dd-trace-go.v1"
-	DatadogTracerV2    = "github.com/DataDog/dd-trace-go/v2"
-	DatadogTracerV2All = "github.com/DataDog/dd-trace-go/orchestrion/all/v2"
+	DatadogTracerV2    = "github.com/GuanceCloud/dd-trace-go/v2"
+	DatadogTracerV2All = "github.com/GuanceCloud/dd-trace-go/orchestrion/all/v2"
 )

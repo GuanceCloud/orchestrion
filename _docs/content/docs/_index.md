@@ -44,8 +44,8 @@ they are compiled or linked.
   Have a question or feedback? Feel free to [open an issue][gh-new-issue], or
   engage with us and the community on [GitHub discussions][gh-discussions].
 
-  [gh-new-issue]: https://github.com/DataDog/orchestrion/issues/new/choose
-  [gh-discussions]: https://github.com/DataDog/orchestrion/discussions
+  [gh-new-issue]: https://github.com/GuanceCloud/orchestrion/issues/new/choose
+  [gh-discussions]: https://github.com/GuanceCloud/orchestrion/discussions
 {{</callout>}}
 
 ## Next

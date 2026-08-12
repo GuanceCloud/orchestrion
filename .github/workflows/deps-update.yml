@@ -21,11 +21,11 @@ jobs:
           # will bail out if it encounters a "candidate" that requires a newer release.
           go-version: stable
           cache-dependency-path: '**/go.mod'
-      - name: Determine latest github.com/DataDog/dd-trace-go/v2 version
+      - name: Determine latest github.com/GuanceCloud/dd-trace-go/v2 version
         id: dd-trace-go
         run: |-
           set -euo pipefail
-          version=$(go list -f '{{range .Versions}}{{.}}{{"\n"}}{{end}}' -m -versions github.com/DataDog/dd-trace-go/v2 | grep -v '-' | tail -n 1)
+          version=$(go list -f '{{range .Versions}}{{.}}{{"\n"}}{{end}}' -m -versions github.com/GuanceCloud/dd-trace-go/v2 | grep -v '-' | tail -n 1)
           echo "version=${version}" >> "${GITHUB_OUTPUT}"
       # Passing "go@<version>" to "go get -u" ensures no dependencies get upgraded to a release that
       # does not support that specific go release. We do `go get -u` everywhere first, and then
@@ -35,7 +35,7 @@ jobs:
         run: |-
           find . -iname go.mod -not -path './_docs/themes/**' -print0 | while IFS= read -r -d '' gomod; do
             dir="$(dirname "${gomod}")"
-            go -C="${dir}" get -t -u "go@$(go -C="${dir}" mod edit -json | jq -r .Go)" "github.com/DataDog/dd-trace-go/v2@${{ steps.dd-trace-go.outputs.version }}" ./...
+            go -C="${dir}" get -t -u "go@$(go -C="${dir}" mod edit -json | jq -r .Go)" "github.com/GuanceCloud/dd-trace-go/v2@${{ steps.dd-trace-go.outputs.version }}" ./...
           done
       - name: Run go mod tidy
         run: |-

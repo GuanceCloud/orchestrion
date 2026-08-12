@@ -11,7 +11,7 @@ import (
 	"github.com/dave/dst"
 	"github.com/dave/dst/dstutil"
 
-	"github.com/DataDog/orchestrion/internal/injector/aspect/context"
+	"github.com/GuanceCloud/orchestrion/internal/injector/aspect/context"
 )
 
 // dot provides the `.` value to code templates, and is used to access various bits of

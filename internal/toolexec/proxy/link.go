@@ -11,7 +11,7 @@ import (
 	"path/filepath"
 )
 
-//go:generate go run github.com/DataDog/orchestrion/internal/toolexec/proxy/generator -command=link
+//go:generate go run github.com/GuanceCloud/orchestrion/internal/toolexec/proxy/generator -command=link
 
 type linkFlagSet struct {
 	BuildMode   string `ddflag:"-buildmode"`

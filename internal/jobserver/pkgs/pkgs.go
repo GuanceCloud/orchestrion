@@ -8,8 +8,8 @@ package pkgs
 import (
 	"context"
 
-	"github.com/DataDog/orchestrion/internal/injector/config"
-	"github.com/DataDog/orchestrion/internal/jobserver/common"
+	"github.com/GuanceCloud/orchestrion/internal/injector/config"
+	"github.com/GuanceCloud/orchestrion/internal/jobserver/common"
 	"github.com/nats-io/nats.go"
 	"github.com/rs/zerolog"
 	"golang.org/x/tools/go/packages"

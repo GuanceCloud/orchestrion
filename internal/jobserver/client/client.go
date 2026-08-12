@@ -12,10 +12,10 @@ import (
 	"os"
 	"time"
 
-	"github.com/DataDog/dd-trace-go/v2/ddtrace/ext"
-	"github.com/DataDog/dd-trace-go/v2/ddtrace/tracer"
-	"github.com/DataDog/orchestrion/internal/jobserver/common"
-	"github.com/DataDog/orchestrion/internal/traceutil"
+	"github.com/GuanceCloud/dd-trace-go/v2/ddtrace/ext"
+	"github.com/GuanceCloud/dd-trace-go/v2/ddtrace/tracer"
+	"github.com/GuanceCloud/orchestrion/internal/jobserver/common"
+	"github.com/GuanceCloud/orchestrion/internal/traceutil"
 	"github.com/nats-io/nats.go"
 	"github.com/rs/zerolog/log"
 )

@@ -13,8 +13,8 @@ import (
 	"runtime"
 	"testing"
 
-	"github.com/DataDog/orchestrion/internal/injector/config"
-	"github.com/DataDog/orchestrion/internal/version"
+	"github.com/GuanceCloud/orchestrion/internal/injector/config"
+	"github.com/GuanceCloud/orchestrion/internal/version"
 	"github.com/stretchr/testify/require"
 )
 
@@ -30,7 +30,7 @@ func Test(t *testing.T) {
 
 	_, thisFile, _, _ := runtime.Caller(0)
 	rootDir := filepath.Join(thisFile, "..", "..", "..")
-	cmd = exec.Command("go", "mod", "edit", "-replace=github.com/DataDog/orchestrion="+rootDir)
+	cmd = exec.Command("go", "mod", "edit", "-replace=github.com/GuanceCloud/orchestrion="+rootDir)
 	cmd.Dir = tmp
 	require.NoError(t, cmd.Run())
 
@@ -39,7 +39,7 @@ func Test(t *testing.T) {
 	require.NoError(t, cmd.Run())
 
 	var stdout bytes.Buffer
-	cmd = exec.Command("go", "run", "github.com/DataDog/orchestrion", "go", "run", ".")
+	cmd = exec.Command("go", "run", "github.com/GuanceCloud/orchestrion", "go", "run", ".")
 	cmd.Dir = tmp
 	cmd.Stdout = &stdout
 	cmd.Stderr = os.Stderr
@@ -54,7 +54,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/DataDog/orchestrion/runtime/built"
+	"github.com/GuanceCloud/orchestrion/runtime/built"
 )
 
 func main() {
@@ -71,6 +71,6 @@ const orchestrionToolGo = `//go:build tools
 package tools
 
 import (
-	_ "github.com/DataDog/orchestrion"
+	_ "github.com/GuanceCloud/orchestrion"
 )
 `

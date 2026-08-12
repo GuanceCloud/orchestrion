@@ -8,9 +8,9 @@ package aspect
 import (
 	"testing"
 
-	"github.com/DataDog/orchestrion/internal/jobserver/pkgs"
-	"github.com/DataDog/orchestrion/internal/toolexec/aspect/linkdeps"
-	"github.com/DataDog/orchestrion/internal/toolexec/importcfg"
+	"github.com/GuanceCloud/orchestrion/internal/jobserver/pkgs"
+	"github.com/GuanceCloud/orchestrion/internal/toolexec/aspect/linkdeps"
+	"github.com/GuanceCloud/orchestrion/internal/toolexec/importcfg"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

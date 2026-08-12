@@ -17,11 +17,11 @@ import (
 	redigo "github.com/gomodule/redigo/redis"
 	redisv9 "github.com/redis/go-redis/v9"
 //line <generated>:1
-	__orchestrion_trace "github.com/DataDog/dd-trace-go/contrib/go-redis/redis.v7/v2"
-	__orchestrion_trace1 "github.com/DataDog/dd-trace-go/contrib/go-redis/redis.v8/v2"
-	__orchestrion_trace2 "github.com/DataDog/dd-trace-go/contrib/go-redis/redis/v2"
-	__orchestrion_redigotrace "github.com/DataDog/dd-trace-go/contrib/gomodule/redigo/v2"
-	__orchestrion_trace3 "github.com/DataDog/dd-trace-go/contrib/redis/go-redis.v9/v2"
+	__orchestrion_trace "github.com/GuanceCloud/dd-trace-go/contrib/go-redis/redis.v7/v2"
+	__orchestrion_trace1 "github.com/GuanceCloud/dd-trace-go/contrib/go-redis/redis.v8/v2"
+	__orchestrion_trace2 "github.com/GuanceCloud/dd-trace-go/contrib/go-redis/redis/v2"
+	__orchestrion_redigotrace "github.com/GuanceCloud/dd-trace-go/contrib/gomodule/redigo/v2"
+	__orchestrion_trace3 "github.com/GuanceCloud/dd-trace-go/contrib/redis/go-redis.v9/v2"
 )
 
 //line samples/client/redis.go:20

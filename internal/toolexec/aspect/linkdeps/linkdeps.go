@@ -15,8 +15,8 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/DataDog/dd-trace-go/v2/ddtrace/tracer"
-	"github.com/DataDog/orchestrion/internal/toolexec/importcfg"
+	"github.com/GuanceCloud/dd-trace-go/v2/ddtrace/tracer"
+	"github.com/GuanceCloud/orchestrion/internal/toolexec/importcfg"
 	"github.com/blakesmith/ar"
 	"github.com/rs/zerolog"
 )
