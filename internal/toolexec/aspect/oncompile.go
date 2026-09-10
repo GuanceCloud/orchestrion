@@ -11,7 +11,6 @@ import (
 	"os"
 	"path/filepath"
 	"slices"
-	"strings"
 
 	"github.com/GuanceCloud/dd-trace-go/v2/ddtrace/tracer"
 	"github.com/GuanceCloud/orchestrion/internal/goenv"
@@ -32,19 +31,27 @@ import (
 var OrchestrionDirPathElement = filepath.Join("orchestrion", "src")
 
 func (w Weaver) OnCompile(ctx context.Context, cmd *proxy.CompileCommand) (resErr error) {
-	if pkgs.ResolvingTestVariants() && cmd.Flags.Package == "main" && strings.HasSuffix(w.ImportPath, ".test") {
+	if pkgs.ResolvingTestVariants() && cmd.Flags.Package == "main" && w.isTestMain() {
 		// The nested test main only exists to make cmd/go build affected variants.
 		// Its source may come from the build cache without the _testmain.go filename,
 		// so identify it from cmd/go's package metadata instead of its input path.
 		return nil
 	}
 
-	span, ctx := tracer.StartSpanFromContext(ctx, "Weaver.OnCompile",
-		tracer.ResourceName(w.ImportPath),
-	)
+	spanOptions := []tracer.StartSpanOption{tracer.ResourceName(w.ImportPath)}
+	if w.Variant != "" {
+		spanOptions = append(spanOptions, tracer.Tag("variant", w.Variant))
+	}
+	span, ctx := tracer.StartSpanFromContext(ctx, "Weaver.OnCompile", spanOptions...)
 	defer func() { span.Finish(tracer.WithError(resErr)) }()
 
-	log := zerolog.Ctx(ctx).With().Str("phase", "compile").Str("import-path", w.ImportPath).Logger()
+	logContext := zerolog.Ctx(ctx).With().
+		Str("phase", "compile").
+		Str("import-path", w.ImportPath)
+	if w.Variant != "" {
+		logContext = logContext.Str("variant", w.Variant)
+	}
+	log := logContext.Logger()
 	ctx = log.WithContext(ctx)
 
 	imports, err := importcfg.ParseFile(ctx, cmd.Flags.ImportCfg)
@@ -97,9 +104,12 @@ func (w Weaver) OnCompile(ctx context.Context, cmd *proxy.CompileCommand) (resEr
 		RootConfig: map[string]string{"httpmode": "wrap"},
 		Lookup:     imports.Lookup,
 		ImportPath: w.ImportPath,
-		TestMain:   cmd.TestMain() && strings.HasSuffix(w.ImportPath, ".test"),
-		ImportMap:  imports.PackageFile,
-		GoVersion:  cmd.Flags.Lang,
+		// Both signals are required: cmd.TestMain validates the generated source,
+		// while w.isTestMain validates a variant-free ".test" identity; package
+		// names may themselves end in ".test".
+		TestMain:  cmd.TestMain() && w.isTestMain(),
+		ImportMap: imports.PackageFile,
+		GoVersion: cmd.Flags.Lang,
 		ModifiedFile: func(file string) string {
 			return filepath.Join(filepath.Dir(cmd.Flags.Output), OrchestrionDirPathElement, cmd.Flags.Package, filepath.Base(file))
 		},
@@ -127,6 +137,11 @@ func (w Weaver) OnCompile(ctx context.Context, cmd *proxy.CompileCommand) (resEr
 
 	if references.Count() == 0 {
 		return nil
+	}
+
+	_, reversePackageFiles, reverseVariant, err := pkgs.ReverseVariantEnvironment()
+	if err != nil {
+		return err
 	}
 
 	var regUpdated bool
@@ -158,10 +173,22 @@ func (w Weaver) OnCompile(ctx context.Context, cmd *proxy.CompileCommand) (resEr
 			continue
 		}
 
-		// Imported packages need to be provided in the compilation's importcfg file
-		deps, err := resolvePackageFiles(ctx, depImportPath, cmd.WorkDir)
-		if err != nil {
-			return fmt.Errorf("resolving woven dependency on %s: %w", depImportPath, err)
+		// Imported packages need to be provided in the compilation's importcfg file.
+		// Reverse test-variant builds receive the authoritative package-under-test
+		// closure from their outer test-main compilation. Using it directly avoids
+		// recursively resolving the same synthetic edge and ensures this archive is
+		// compiled against the exact fingerprint the outer test binary will link.
+		var deps pkgs.ResolveResponse
+		if _, found := reversePackageFiles[depImportPath]; reverseVariant && found {
+			deps = make(pkgs.ResolveResponse, len(reversePackageFiles))
+			for path, archive := range reversePackageFiles {
+				deps[path] = pkgs.ResolvedArchive{ExportFile: archive}
+			}
+		} else {
+			deps, err = resolvePackageFiles(ctx, depImportPath, cmd.WorkDir)
+			if err != nil {
+				return fmt.Errorf("resolving woven dependency on %s: %w", depImportPath, err)
+			}
 		}
 		for dep, resolved := range deps {
 			archive := resolved.ExportFile

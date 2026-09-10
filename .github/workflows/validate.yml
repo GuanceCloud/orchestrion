@@ -18,8 +18,6 @@ jobs:
   generate:
     runs-on: ubuntu-latest
     name: Run all generators
-    outputs:
-      has-patch: ${{ steps.is-tree-dirty.outputs.result }}
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v4
@@ -81,6 +79,9 @@ jobs:
           git status
           git diff --staged --patch --exit-code > .repo.patch || echo 'result=true' >> "${GITHUB_OUTPUT}"
       - name: Upload patch
+        # CONTRACT: .github/workflows/self-mutation.yml watches this workflow via `workflow_run` and
+        # commits this artifact back onto the pull request's branch. Renaming the artifact, the file,
+        # or this workflow's `name:` breaks that silently -- the two files are not otherwise linked.
         if: github.event_name != 'push' && steps.is-tree-dirty.outputs.result == 'true'
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
@@ -90,50 +91,20 @@ jobs:
           path: .repo.patch
       - name: Fail build if working tree is dirty
         if: github.event_name != 'push' && steps.is-tree-dirty.outputs.result == 'true'
+        env:
+          IS_FORK: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository }}
         run: |-
           echo "::error::Files have been modified by 'go generate ./...' (see logs)."
           cat .repo.patch
+          if [ "${IS_FORK}" = 'true' ]; then
+            echo '::notice::Automatic fixups are not available for fork pull requests. Run the' \
+                 'generators locally and commit the result: `find . -name go.mod -execdir go' \
+                 'generate ./... \;`, `./_tools/make-licenses.sh`, then `make docs`.'
+          else
+            echo '::notice::The "Self Mutation" workflow will push these changes to this branch' \
+                 'once this run completes; see the Actions tab.'
+          fi
           exit 1
-  ##############################################################################
-  # If the generators changed anything, and we can update the PR, then we'll
-  # proactively do it with the mutator token.
-  self-mutation:
-    needs: generate
-    runs-on: ubuntu-latest
-    name: Update PR with generated files
-    permissions:
-      id-token: write
-      contents: read
-    if: always() && needs.generate.outputs.has-patch == 'true' && github.event_name == 'pull_request' && (github.event.pull_request.head.repo.full_name == github.repository || github.event.pull_request.maintainer_can_modify)
-    steps:
-      - name: Checkout
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v4
-        with:
-          ref: ${{ github.event.pull_request.head.ref }}
-          repository: ${{ github.event.pull_request.head.repo.full_name }}
-      - name: Download patch
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
-        with:
-          name: repo.patch
-          path: ${{ runner.temp }}
-      - name: Apply patch
-        run: |-
-          [ -s '${{ runner.temp }}/.repo.patch' ] && git apply '${{ runner.temp }}/.repo.patch' || echo 'Empty patch. Skipping.'
-      - name: Get GitHub token (DataDog/orchestrion)
-        id: generate-token
-        uses: DataDog/dd-octo-sts-action@96a25462dbcb10ebf0bfd6e2ccc917d2ab235b9a # v1.0.4
-        with:
-          scope: DataDog/orchestrion
-          policy: self.github.validate.self-mutation
-      # We use ghcommit to create signed commits directly using the GitHub API
-      - name: Push changes
-        uses: planetscale/ghcommit-action@a6b150b81dca5dd027baa898604418eec9e11465 # v0.2.22
-        with:
-          commit_message: "chore: update generated files"
-          repo: ${{ github.event.pull_request.head.repo.full_name }}
-          branch: ${{ github.event.pull_request.head.ref }}
-        env:
-          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
   ##############################################################################
   # Run the various linters we have set up...
   lint:
@@ -151,7 +122,7 @@ jobs:
       - name: Verify license headers
         run: go run ./_tools/headercheck/header_check.go
       - name: Check documentation for misspellings
-        uses: crate-ci/typos@bee27e3a4fd1ea2111cf90ab89cd076c870fce14 # v1.48.0
+        uses: crate-ci/typos@8a48f81b6c64dcfea44b3633223084c4be58ac5f # v1.49.0
   lint-go:
     needs: generate
     name: GolangCI Lint (${{ matrix.runs-on }} | ${{ matrix.working-directory || 'main' }})
@@ -174,7 +145,7 @@ jobs:
       - name: Run golangci-lint
         uses: golangci/golangci-lint-action@ba0d7d2ec06a0ea1cb5fa41b2e4a3ab91d21278a # v6
         with:
-          version: v2.9.0
+          version: v2.13.2
           working-directory: ${{ matrix.working-directory }}
   ##############################################################################
   # Verify all GitHub workflows have hash-pinned actions
@@ -185,7 +156,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v4
       - name: Ensure SHA pinned actions
-        uses: zgosalvez/github-actions-ensure-sha-pinned-actions@46cfe808a5f1588656ef299eedd0ce2fd7ec0dcc # v3
+        uses: zgosalvez/github-actions-ensure-sha-pinned-actions@c5fc58bd0be7a4b94b73ce40250322d5b838a108 # v3
         with:
           allowlist: DataDog/dd-trace-go # Trust actions/workflows in the dd-trace-go repository
       - name: Verify actions are pinned with ratchet
@@ -193,7 +164,7 @@ jobs:
         with:
           files: ".github/workflows/*.yml .github/actions/**/action.yml"
       - name: Run actionlint
-        uses: reviewdog/action-actionlint@50842263c20a7c46bd0065b9e624d3c569db061e # v1.73.0
+        uses: reviewdog/action-actionlint@d63ba7532e0942965320cd8d73cbae4c7b3c5283 # v1.73.1
         with:
           reporter: github-check
           level: error
@@ -268,10 +239,9 @@ jobs:
         shell: bash
         run: |-
           mkdir -p coverage
-          test_args=("-shuffle=on" "-race")
-          if [ "${{ runner.os }}" == "Windows" ]; then
-            test_args+=("-timeout=30m")
-          fi
+          # The root package's tests each run several complete instrumented builds of a synthetic module,
+          # which takes them well past Go's default 10 minute per-package timeout on CI runners.
+          test_args=("-shuffle=on" "-race" "-timeout=60m")
           if [ "${{ github.event_name }}" != "merge_group" ]; then
             test_args+=("-cover" "-covermode=atomic" "-coverpkg=./...,github.com/GuanceCloud/orchestrion/...")
           fi
@@ -397,9 +367,13 @@ jobs:
       - name: Build orchestrion
         run: go build -o bin/orchestrion .
       - name: Run E2E tests
-        run: go test -tags=e2e -v -timeout=10m ./test/e2e/ 2>&1 | tee test-e2e.log
+        run: go test -tags=e2e -v -timeout=15m ./test/e2e/ 2>&1 | tee test-e2e.log
         env:
-          E2E_TEST_TIMEOUT: 5m
+          # These tests pin Orchestrion into a synthetic module, which downloads the complete
+          # `dd-trace-go` integration set. Those modules are not part of any committed `go.mod` file, so
+          # they are never in the Go module cache restored by `actions/setup-go`, and downloading them
+          # alone can take several minutes on the slowest runners.
+          E2E_TEST_TIMEOUT: 12m
       - name: Upload E2E artifacts on failure
         if: failure()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7

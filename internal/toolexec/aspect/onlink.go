@@ -13,6 +13,7 @@ import (
 
 	"github.com/GuanceCloud/dd-trace-go/v2/ddtrace/tracer"
 	"github.com/GuanceCloud/orchestrion/internal/jobserver/pkgs"
+	"github.com/GuanceCloud/orchestrion/internal/toolexec/archive"
 	"github.com/GuanceCloud/orchestrion/internal/toolexec/aspect/linkdeps"
 	"github.com/GuanceCloud/orchestrion/internal/toolexec/importcfg"
 	"github.com/GuanceCloud/orchestrion/internal/toolexec/proxy"
@@ -20,12 +21,18 @@ import (
 )
 
 func (w Weaver) OnLink(ctx context.Context, cmd *proxy.LinkCommand) (err error) {
-	span, ctx := tracer.StartSpanFromContext(ctx, "Weaver.OnLink",
-		tracer.ResourceName(w.ImportPath),
-	)
+	spanOptions := []tracer.StartSpanOption{tracer.ResourceName(w.ImportPath)}
+	if w.Variant != "" {
+		spanOptions = append(spanOptions, tracer.Tag("variant", w.Variant))
+	}
+	span, ctx := tracer.StartSpanFromContext(ctx, "Weaver.OnLink", spanOptions...)
 	defer func() { span.Finish(tracer.WithError(err)) }()
 
-	log := zerolog.Ctx(ctx).With().Str("phase", "link").Logger()
+	logContext := zerolog.Ctx(ctx).With().Str("phase", "link")
+	if w.Variant != "" {
+		logContext = logContext.Str("variant", w.Variant)
+	}
+	log := logContext.Logger()
 	ctx = log.WithContext(ctx)
 
 	reg, err := importcfg.ParseFile(ctx, cmd.Flags.ImportCfg)
@@ -33,9 +40,23 @@ func (w Weaver) OnLink(ctx context.Context, cmd *proxy.LinkCommand) (err error) 
 		return fmt.Errorf("parsing %q: %w", cmd.Flags.ImportCfg, err)
 	}
 
-	testVariantFor, _, err := cmd.TestVariantFor(ctx)
+	testMain, _, err := cmd.TestMainInfo(ctx)
 	if err != nil {
 		return fmt.Errorf("reading test-main metadata: %w", err)
+	}
+	testVariantFor := testMain.Target
+	if err := refreshTestMainPackageFiles(ctx, &testMain, &reg, cmd.WorkDir, resolveReversePackageFilesForTest); err != nil {
+		return err
+	}
+	variantArchives := make(map[string]string, len(testMain.PackageFiles))
+	changed := false
+	for importPath, archive := range testMain.PackageFiles {
+		variantArchives[importPath] = archive
+		if reg.PackageFile[importPath] == archive {
+			continue
+		}
+		reg.PackageFile[importPath] = archive
+		changed = true
 	}
 
 	type archiveWork struct {
@@ -55,7 +76,6 @@ func (w Weaver) OnLink(ctx context.Context, cmd *proxy.LinkCommand) (err error) 
 	sort.Slice(queue, less)
 	processed := make(map[archiveWork]bool)
 	resolveTestTargetProvenance := newTestTargetProvenanceResolver(ctx, testVariantFor, cmd.WorkDir)
-	var changed bool
 	for len(queue) > 0 {
 		item := queue[0]
 		queue = queue[1:]
@@ -63,6 +83,11 @@ func (w Weaver) OnLink(ctx context.Context, cmd *proxy.LinkCommand) (err error) 
 			continue
 		}
 		processed[item] = true
+		if current, found := reg.PackageFile[item.importPath]; found && current != item.archive {
+			// A test-variant resolution replaced this archive after it was queued.
+			// Its stale dependency metadata no longer describes the selected closure.
+			continue
+		}
 
 		linkDeps, err := linkdeps.FromArchive(ctx, item.archive)
 		if err != nil {
@@ -71,6 +96,10 @@ func (w Weaver) OnLink(ctx context.Context, cmd *proxy.LinkCommand) (err error) 
 		log.Debug().Str("import-path", item.importPath).Str("archive", item.archive).Msg("Processing " + linkdeps.Filename + " dependencies")
 		for _, depPath := range linkDeps.Dependencies() {
 			kind := linkDeps.Kind(depPath)
+			if depPath == testVariantFor && kind == linkdeps.ImportDependency &&
+				(variantArchives[item.importPath] == item.archive || item.importPath == testVariantFor+".test") {
+				continue
+			}
 			if arch, found := reg.PackageFile[depPath]; found && (testVariantFor == "" || depPath == testVariantFor) {
 				var selected pkgs.ResolvedArchive
 				if depPath == testVariantFor && kind == linkdeps.ImportDependency {
@@ -102,6 +131,9 @@ func (w Weaver) OnLink(ctx context.Context, cmd *proxy.LinkCommand) (err error) 
 			added := false
 			for p, archive := range updates {
 				log.Debug().Str("import-path", p).Str("archive", archive).Msg("Recording resolved " + linkdeps.Filename + " dependency")
+				if deps[p].ForTest == testVariantFor {
+					variantArchives[p] = archive
+				}
 				queue = append(queue, archiveWork{importPath: p, archive: archive})
 				added = true
 				changed = true
@@ -125,5 +157,70 @@ func (w Weaver) OnLink(ctx context.Context, cmd *proxy.LinkCommand) (err error) 
 		return fmt.Errorf("writing updated %q: %w", cmd.Flags.ImportCfg, err)
 	}
 
+	return nil
+}
+
+type reversePackageFilesResolver func(
+	ctx context.Context,
+	importPath string,
+	testVariantFor string,
+	authoritativeTarget string,
+	workDir string,
+) (pkgs.ResolveResponse, error)
+
+func refreshTestMainPackageFiles(
+	ctx context.Context,
+	info *proxy.TestMainInfo,
+	reg *importcfg.ImportConfig,
+	workDir string,
+	resolve reversePackageFilesResolver,
+) error {
+	if len(info.PackageFiles) == 0 {
+		return nil
+	}
+	stale := false
+	for importPath, filename := range info.PackageFiles {
+		fingerprint, err := archive.CompatibilityFingerprint(filename)
+		if err != nil || fingerprint != info.PackageFingerprints[importPath] {
+			stale = true
+			break
+		}
+	}
+	if !stale {
+		return nil
+	}
+	if len(info.ReverseRoots) == 0 {
+		return fmt.Errorf("cached test-main metadata for %q references unavailable reverse variants and has no reconstruction roots", info.Target)
+	}
+	authoritative := reg.PackageFile[info.Target]
+	if authoritative == "" {
+		return fmt.Errorf("test-main import configuration is missing the authoritative package-under-test archive %q", info.Target)
+	}
+	refreshed := make(map[string]string)
+	for _, root := range info.ReverseRoots {
+		variants, err := resolve(ctx, root, info.Target, authoritative, workDir)
+		if err != nil {
+			return fmt.Errorf("reconstructing cached reverse test variant %q for %q: %w", root, info.Target, err)
+		}
+		for importPath, resolved := range variants {
+			refreshed[importPath] = resolved.ExportFile
+		}
+	}
+	selected := make(map[string]string, len(info.PackageFingerprints))
+	for importPath, expected := range info.PackageFingerprints {
+		filename := refreshed[importPath]
+		if filename == "" {
+			return fmt.Errorf("reconstructed reverse test variants for %q omitted %q", info.Target, importPath)
+		}
+		fingerprint, err := archive.CompatibilityFingerprint(filename)
+		if err != nil {
+			return fmt.Errorf("fingerprinting reconstructed reverse test variant %q: %w", importPath, err)
+		}
+		if fingerprint != expected {
+			return fmt.Errorf("reconstructed reverse test variant %q has fingerprint %s, cached test main expects %s", importPath, fingerprint, expected)
+		}
+		selected[importPath] = filename
+	}
+	info.PackageFiles = selected
 	return nil
 }

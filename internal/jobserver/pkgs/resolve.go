@@ -15,6 +15,7 @@ import (
 	"maps"
 	"os"
 	"slices"
+	"strconv"
 	"strings"
 
 	"github.com/GuanceCloud/dd-trace-go/v2/ddtrace/tracer"
@@ -41,6 +42,12 @@ var envIgnoreList = map[string]func(*ResolveRequest, string){
 		}
 		r.TempDir = dir
 	},
+	envVarReverseVariant: func(r *ResolveRequest, path string) {
+		r.reverseVariantPath = path
+	},
+	envVarReverseVariantFlavor: func(r *ResolveRequest, flavor string) {
+		r.ReverseVariantFlavor = flavor
+	},
 	// Known to change between invocations & irrelevant to the resolution, but can be used to detect cycles.
 	"TOOLEXEC_IMPORTPATH":       func(r *ResolveRequest, path string) { r.toolexecImportpath = path },
 	envVarParentID:              func(r *ResolveRequest, id string) { r.resolveParentID = id },
@@ -49,15 +56,21 @@ var envIgnoreList = map[string]func(*ResolveRequest, string){
 
 type (
 	ResolveRequest struct {
-		Dir            string   `json:"dir"`                      // The directory to resolve from (usually where `go.mod` is)
-		Env            []string `json:"env"`                      // Environment variables to use during resolution
-		Pattern        string   `json:"pattern"`                  // Package pattern to resolve
-		TempDir        string   `json:"tmpdir,omitempty"`         // A temporary directory to use for Go build artifacts
-		TestVariantFor string   `json:"testVariantFor,omitempty"` // Resolve the literal Pattern as built for this package's tests
+		Dir                string   `json:"dir"`                          // The directory to resolve from (usually where `go.mod` is)
+		Env                []string `json:"env"`                          // Environment variables to use during resolution
+		Pattern            string   `json:"pattern"`                      // Package pattern to resolve
+		TempDir            string   `json:"tmpdir,omitempty"`             // A temporary directory to use for Go build artifacts
+		TestVariantFor     string   `json:"testVariantFor,omitempty"`     // Resolve the literal Pattern as built for this package's tests
+		ReverseTestVariant bool     `json:"reverseTestVariant,omitempty"` // Rebuild Pattern's test-binary import closure against the authoritative test target
+		// AuthoritativeTarget is the package-under-test archive selected by the outer test-main compilation.
+		AuthoritativeTarget string `json:"authoritativeTarget,omitempty"`
+		// ReverseVariantFlavor preserves the stable reverse-universe identity while its temporary environment path is canonicalized out.
+		ReverseVariantFlavor string `json:"reverseVariantFlavor,omitempty"`
 
 		// Fields set by canonicalization
 		resolveParentID    string // The value of the [envVarParentID] environment variable
 		toolexecImportpath string // The value of the TOOLEXEC_IMPORTPATH environment variable
+		reverseVariantPath string // The value of the [envVarReverseVariant] environment variable
 		canonical          bool   // Whether this request was canonicalized yet
 	}
 	// ResolvedArchive identifies an export archive and, when non-empty, the test target for which
@@ -85,6 +98,9 @@ func (r ResolveRequest) ForeachSpanTag(set func(key string, value any)) {
 	set("request.pattern", r.Pattern)
 	if r.TestVariantFor != "" {
 		set("request.test-variant-for", r.TestVariantFor)
+	}
+	if r.ReverseTestVariant {
+		set("request.reverse-test-variant", true)
 	}
 }
 
@@ -137,6 +153,9 @@ func (s *service) resolve(ctx context.Context, req *ResolveRequest) (ResolveResp
 		if req.TestVariantFor == "" {
 			return loadResolvedPackages(ctx, req, *log)
 		}
+		if req.ReverseTestVariant {
+			return s.resolveReverseTestVariant(ctx, req, *log)
+		}
 
 		ordinaryReq := *req
 		ordinaryReq.TestVariantFor = ""
@@ -157,6 +176,14 @@ func (s *service) resolve(ctx context.Context, req *ResolveRequest) (ResolveResp
 		resp := maps.Clone(ordinary.response)
 		config := ordinary.config
 		config.Env = resolveEnvironment(ctx, req)
+		config.BuildFlags = slices.Clone(config.BuildFlags)
+		if ordinary.testCoverpkgInferred {
+			coveragePackages := slices.Clone(ordinary.testPackagesWithoutTests)
+			if !slices.Contains(coveragePackages, req.TestVariantFor) {
+				coveragePackages = append(coveragePackages, req.TestVariantFor)
+			}
+			config.BuildFlags = scopeInferredTestCoverage(config.BuildFlags, ordinary.testCoverageMode, coveragePackages)
+		}
 		resp, err = mergeTestVariant(ctx, req, ordinary.packages, resp, config)
 		if err != nil {
 			return resolvedPackageSet{}, err
@@ -195,7 +222,16 @@ func loadResolvedPackages(ctx context.Context, req *ResolveRequest, log zerolog.
 		"-a",
 		"-toolexec",
 	)
+	testCoverpkgInferred := goFlags.TestCoverpkgInferred
+	testCoverageMode, _ := goFlags.Get("-covermode")
+	testPackagesWithoutTests := slices.Clone(goFlags.TestPackagesWithoutTests)
 	buildFlags := append(goFlags.Slice(), fmt.Sprintf("-toolexec=%q toolexec", binpath.Orchestrion))
+	if testCoverpkgInferred {
+		// With implicit test coverage, packages that have tests are covered only in
+		// their own test binaries. Command-line packages without tests are instead
+		// covered in their ordinary form and shared by all of those binaries.
+		buildFlags = scopeInferredTestCoverage(buildFlags, testCoverageMode, testPackagesWithoutTests)
+	}
 	loadConfig := &packages.Config{
 		Context: ctx,
 		Mode: packages.NeedExportFile | packages.NeedFiles |
@@ -229,11 +265,56 @@ func loadResolvedPackages(ctx context.Context, req *ResolveRequest, log zerolog.
 
 	log.Trace().Any("result", resp).Msg("pkgs.Resolve finished")
 	return resolvedPackageSet{
-		response:      resp,
-		packages:      pkgs,
-		config:        *loadConfig,
-		buildFlagsErr: flagsErrText,
+		response:                 resp,
+		packages:                 pkgs,
+		config:                   *loadConfig,
+		buildFlagsErr:            flagsErrText,
+		testCoverpkgInferred:     testCoverpkgInferred,
+		testCoverageMode:         testCoverageMode,
+		testPackagesWithoutTests: testPackagesWithoutTests,
 	}, nil
+}
+
+func scopeInferredTestCoverage(buildFlags []string, mode string, pkgs []string) []string {
+	result := withoutCoverageBuildFlags(buildFlags)
+	if len(pkgs) == 0 {
+		return result
+	}
+	result = append(result, "-cover", "-coverpkg="+strings.Join(pkgs, ","))
+	if mode != "" {
+		result = append(result, "-covermode="+mode)
+	}
+	return result
+}
+
+func buildFlagsHaveCoverage(buildFlags []string) bool {
+	enabled := false
+	for _, flag := range buildFlags {
+		name, value, assigned := strings.Cut(flag, "=")
+		switch name {
+		case "-covermode", "-coverpkg":
+			enabled = true
+		case "-cover":
+			if !assigned {
+				enabled = true
+			} else if parsed, err := strconv.ParseBool(value); err == nil {
+				enabled = parsed
+			}
+		}
+	}
+	return enabled
+}
+
+func withoutCoverageBuildFlags(buildFlags []string) []string {
+	result := make([]string, 0, len(buildFlags)+3)
+	for _, flag := range buildFlags {
+		name, _, _ := strings.Cut(flag, "=")
+		if name == "-cover" || name == "-covermode" || name == "-coverpkg" {
+			continue
+		}
+		result = append(result, flag)
+	}
+	return result
 }
 
 func resolveEnvironment(ctx context.Context, req *ResolveRequest) []string {
@@ -246,6 +327,12 @@ func resolveEnvironment(ctx context.Context, req *ResolveRequest) []string {
 	}
 	if req.TempDir != "" {
 		env = append(env, fmt.Sprintf("%s=%s", envVarGotmpdir, req.TempDir))
+	}
+	if req.reverseVariantPath != "" {
+		env = append(env,
+			envVarReverseVariant+"="+req.reverseVariantPath,
+			envVarReverseVariantFlavor+"="+req.ReverseVariantFlavor,
+		)
 	}
 	return env
 }
