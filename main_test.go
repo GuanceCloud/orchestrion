@@ -22,6 +22,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 	"golang.org/x/mod/modfile"
+	"golang.org/x/tools/cover"
 )
 
 func TestSyntheticLinkDependencyUsesTestVariant(t *testing.T) {
@@ -73,22 +74,47 @@ aspects:
             //go:linkname __orchestrionInternalRootValue example.com/testvariant/dep/internal/root.Value
             func __orchestrionInternalRootValue() int
 `)
-	writeFile("subject/subject.go", "package subject\n\nfunc Value() int { return 42 }\n")
+	writeFile("subject/subject.go", `package subject
+
+import (
+	"example.com/testvariant/leaf"
+	"example.com/testvariant/notests"
+)
+
+func Value() int { return 40 + leaf.Value() + notests.Value() }
+`)
 	writeFile("subject/subject_test.go", `package subject
 
 import "testing"
 
 func TestValue(t *testing.T) {
-	if got := Value(); got != 42 {
-		t.Fatalf("Value() = %d, want 42", got)
+	for range 3 {
+		if got := Value(); got != 42 {
+			t.Fatalf("Value() = %d, want 42", got)
+		}
+	}
+}
+`)
+	writeFile("leaf/leaf.go", "package leaf\n\nfunc Value() int { return 1 }\n")
+	writeFile("notests/notests.go", "package notests\n\nfunc Value() int { return 1 }\n")
+	writeFile("leaf/leaf_test.go", `package leaf
+
+import "testing"
+
+func TestValue(t *testing.T) {
+	if got := Value(); got != 1 {
+		t.Fatalf("Value() = %d, want 1", got)
 	}
 }
 `)
 	writeFile("root/root.go", `package root
 
-import "example.com/testvariant/subject"
+import (
+	"example.com/testvariant/leaf"
+	"example.com/testvariant/subject"
+)
 
-func Value() int { return subject.Value() }
+func Value() int { return subject.Value() + leaf.Value() - 1 }
 `)
 	writeFile("dep/internal/root/root.go", `package root
 
@@ -101,9 +127,50 @@ func Value() int { return subject.Value() }
 	run.exec(t, orchestrion, "go", "test", "-a", "./subject")
 	run.exec(t, orchestrion, "go", "test", "-a", "-cover", "-coverpkg=./...", "./subject")
 
+	// A multi-package coverage run compiles root against the ordinary subject archive before
+	// Orchestrion injects it into the subject test binary, whose subject archive has coverage.
+	run.exec(t, orchestrion, "go", "test", "-a", "-coverprofile="+filepath.Join(run.dir, "coverage.out"), "./root", "./subject")
+
+	// Without an explicit -coverpkg, Go covers each package that has tests only in its own test
+	// binary, while covering command-line packages without tests in their ordinary form. The nested
+	// load for the subject test binary must therefore leave leaf uninstrumented but instrument
+	// notests, matching the archives against which subject was compiled.
+	run.exec(t, orchestrion, "go", "test", "-a", "-coverprofile="+filepath.Join(run.dir, "coverage-all.out"), "./...")
+
+	// Coverage mode implied by -race (rather than an explicit -covermode) must remain consistent
+	// between the ordinary archive and each per-binary-scoped test-variant archive. Repeated calls
+	// to subject.Value distinguish atomic counters from set counters instead of only checking that
+	// the build succeeds.
+	t.Run("RaceCoverMode", func(t *testing.T) {
+		t.Setenv("GOFLAGS", "")
+		profile := filepath.Join(run.dir, "coverage-race.out")
+		run.exec(t, orchestrion, "go", "test", "-a", "-race", "-coverprofile="+profile, "./...")
+		requireCoverageCountAtLeast(t, profile, "example.com/testvariant/subject/subject.go", "atomic", 3)
+	})
+
+	// Implied build modes supplied through GOFLAGS must reach the nested scoped rebuilds too.
+	t.Run("RaceCoverModeFromGOFLAGS", func(t *testing.T) {
+		t.Setenv("GOFLAGS", "-race")
+		profile := filepath.Join(run.dir, "coverage-goflags-race.out")
+		run.exec(t, orchestrion, "go", "test", "-a", "-coverprofile="+profile, "./...")
+		requireCoverageCountAtLeast(t, profile, "example.com/testvariant/subject/subject.go", "atomic", 3)
+	})
+
+	// Value-less test flags must not consume the package patterns that follow them, as coverage is
+	// otherwise applied to the wrong packages in nested loads.
+	run.exec(t, orchestrion, "go", "test", "-a", "-coverprofile="+filepath.Join(run.dir, "coverage-v.out"), "-v", "./subject", "./root")
+
 	// The nested test-variant load must preserve an overlay supplied to the outer Go command.
 	writeFile("subject/subject.go", "package subject\n\nfunc Value() int { return missing }\n")
-	writeFile("overlay/subject.go", "package subject\n\nfunc Value() int { return 42 }\n")
+	writeFile("overlay/subject.go", `package subject
+
+import (
+	"example.com/testvariant/leaf"
+	"example.com/testvariant/notests"
+)
+
+func Value() int { return 40 + leaf.Value() + notests.Value() }
+`)
 	writeFile("overlay.json", `{"Replace":{"subject/subject.go":"overlay/subject.go"}}`)
 	run.exec(t, orchestrion, "go", "test", "-a", "-overlay=overlay.json", "./subject")
 }
@@ -167,14 +234,303 @@ func TestValue(t *testing.T) {
 	}
 }
 `)
-	writeFile("root/root.go", `package root
+	writeFile("testonly/testonly_test.go", `package testonly
+
+import "testing"
+
+func TestOnly(t *testing.T) {}
+`)
+	writeFile("externaltestonly/external_test.go", `package externaltestonly_test
+
+import "testing"
+
+func TestOnly(t *testing.T) {}
+`)
+	writeFile("middle/middle.go", `package middle
 
 import "example.com/externaltestvariant/subject"
 
 func Value() int { return subject.Value() }
 `)
+	writeFile("root/root.go", `package root
 
-	run.exec(t, buildOrchestrion(t), "go", "test", "-a", "./subject")
+import "example.com/externaltestvariant/middle"
+
+func Value() int { return middle.Value() }
+`)
+
+	orchestrion := buildOrchestrion(t)
+	run.exec(t, orchestrion, "go", "test", "-a", "./subject")
+	// Packages with only test files have no ordinary export archive. An
+	// external-test-only package also has no package-under-test importcfg entry.
+	// Do not resolve provenance or require that entry without a synthetic importer.
+	run.exec(t, orchestrion, "go", "test", "-a", "./testonly", "./externaltestonly")
+	run.exec(t, orchestrion, "go", "test", "-a", "-coverprofile="+filepath.Join(run.dir, "coverage.out"), "./subject")
+	run.exec(t, orchestrion, "go", "test", "-a", "-cover", "-coverpkg=./...", "./subject")
+}
+
+func TestSyntheticImportDependencyWithExternalTests(t *testing.T) {
+	run := runner{dir: t.TempDir()}
+	writeFile := func(name, contents string) {
+		t.Helper()
+		path := filepath.Join(run.dir, filepath.FromSlash(name))
+		require.NoError(t, os.MkdirAll(filepath.Dir(path), 0o755))
+		require.NoError(t, os.WriteFile(path, []byte(contents), 0o644))
+	}
+
+	writeFile("go.mod", `module example.com/reversetestvariant
+
+go 1.25
+
+require github.com/GuanceCloud/orchestrion v0.0.0
+
+replace github.com/GuanceCloud/orchestrion => `+rootDir+"\n")
+	writeFile("orchestrion.tool.go", `//go:build tools
+
+package tools
+
+import (
+	_ "example.com/reversetestvariant/instrumentation"
+	_ "github.com/GuanceCloud/orchestrion"
+)
+`)
+	writeFile("instrumentation/instrumentation.go", "package instrumentation\n")
+	writeFile("instrumentation/orchestrion.yml", `meta:
+  name: Reversed external test variant import
+  description: Injects an import of the covered package under test.
+aspects:
+  - id: reversed-external-test-variant
+    join-point:
+      all-of:
+        - import-path: example.com/reversetestvariant/importer
+        - function-body:
+            function:
+              - name: Value
+    advice:
+      - inject-declarations:
+          imports:
+            subject: example.com/reversetestvariant/subject
+          template: |-
+            func init() {
+              subject.Instrumented++
+            }
+`)
+	writeFile("subject/subject.go", `package subject
+
+var Instrumented int
+
+func Value() int { return 42 }
+`)
+	writeFile("subject/subject_test.go", `package subject_test
+
+import (
+	"testing"
+
+	"example.com/reversetestvariant/helper"
+	"example.com/reversetestvariant/subject"
+)
+
+func TestValue(t *testing.T) {
+	if got := helper.Value(); got != 42 {
+		t.Fatalf("helper.Value() = %d, want 42", got)
+	}
+	if got := subject.Instrumented; got != 1 {
+		t.Fatalf("subject.Instrumented = %d, want 1", got)
+	}
+}
+`)
+	writeFile("helper/helper.go", `package helper
+
+import "example.com/reversetestvariant/importer"
+
+func Value() int { return importer.Value() }
+`)
+	writeFile("importer/importer.go", `package importer
+
+import "fmt"
+
+func Value() int {
+	if fmt.Sprint(42) == "42" {
+		return 42
+	}
+	return 0
+}
+`)
+	orchestrion := buildOrchestrion(t)
+	sharedCache := t.TempDir()
+	run.execWithCache(t, sharedCache, orchestrion, "go", "test", "./subject")
+	run.execWithCache(t, sharedCache, orchestrion, "go", "test", "-coverprofile="+filepath.Join(run.dir, "coverage.out"), "./...")
+	// Reverse variants must not poison ordinary action IDs, and their flavored
+	// action IDs must remain reusable by subsequent covered builds.
+	run.execWithCache(t, sharedCache, orchestrion, "go", "test", "./subject")
+	run.execWithCache(t, sharedCache, orchestrion, "go", "test", "-coverprofile="+filepath.Join(run.dir, "coverage-cached.out"), "./...")
+	run.exec(t, orchestrion, "go", "test", "-cover", "-coverpkg=./...", "./subject")
+
+	// In-package tests make the package under test part of the importer up-set.
+	// Rebuilding that cycle is unsafe, so preserve the existing explicit failure
+	// instead of allowing a linker fingerprint mismatch.
+	writeFile("subject/subject_test.go", `package subject
+
+import (
+	"testing"
+
+	"example.com/reversetestvariant/helper"
+)
+
+func TestValue(t *testing.T) {
+	if got := helper.Value(); got != 42 {
+		t.Fatalf("helper.Value() = %d, want 42", got)
+	}
+	if got := Instrumented; got != 1 {
+		t.Fatalf("Instrumented = %d, want 1", got)
+	}
+}
+`)
+	output := run.execError(t, orchestrion, "go", "test", "-a", "-coverprofile="+filepath.Join(run.dir, "same-package-coverage.out"), "./...")
+	require.Contains(t, output, "cannot safely use the variant")
+	require.NotContains(t, output, "fingerprint mismatch")
+}
+
+func TestAspectsApplyToTestVariants(t *testing.T) {
+	run := runner{dir: t.TempDir()}
+	writeFile := func(name, contents string) {
+		t.Helper()
+		path := filepath.Join(run.dir, filepath.FromSlash(name))
+		require.NoError(t, os.MkdirAll(filepath.Dir(path), 0o755))
+		require.NoError(t, os.WriteFile(path, []byte(contents), 0o644))
+	}
+
+	writeFile("go.mod", `module example.com/testvariantaspect
+
+go 1.25
+
+require github.com/GuanceCloud/orchestrion v0.0.0
+
+replace github.com/GuanceCloud/orchestrion => `+rootDir+"\n")
+	writeFile("orchestrion.tool.go", `//go:build tools
+
+package tools
+
+import (
+	_ "example.com/testvariantaspect/instrumentation"
+	_ "github.com/GuanceCloud/orchestrion"
+)
+`)
+	writeFile("instrumentation/instrumentation.go", "package instrumentation\n")
+	writeFile("instrumentation/orchestrion.yml", `meta:
+  name: Test variant aspects
+  description: Records that the packages a test binary is composed of were instrumented.
+aspects:
+  - id: instrument-subject
+    join-point:
+      all-of:
+        - import-path: example.com/testvariantaspect/subject
+        - function-body:
+            function:
+              - name: Value
+    advice:
+      - prepend-statements:
+          template: |-
+            Instrumented = true
+  - id: instrument-helper
+    join-point:
+      all-of:
+        - import-path: example.com/testvariantaspect/helper
+        - function-body:
+            function:
+              - name: Doubled
+    advice:
+      - prepend-statements:
+          template: |-
+            Instrumented = true
+  - id: instrument-external-test
+    join-point:
+      all-of:
+        - import-path: example.com/testvariantaspect/subject_test
+        - function-body:
+            function:
+              - name: value
+    advice:
+      - prepend-statements:
+          template: |-
+            instrumented = true
+`)
+	writeFile("subject/subject.go", `package subject
+
+// Instrumented is set by the instrumentation aspect when Value is called.
+var Instrumented bool
+
+func Value() int { return 42 }
+`)
+	// Go rebuilds the importers of the package under test against its test variant, and identifies those
+	// with an annotated $TOOLEXEC_IMPORTPATH value as well.
+	writeFile("helper/helper.go", `package helper
+
+import "example.com/testvariantaspect/subject"
+
+// Instrumented is set by the instrumentation aspect when Doubled is called.
+var Instrumented bool
+
+func Doubled() int { return 2 * subject.Value() }
+`)
+	// Go builds the package under test again together with its in-package test files, which it identifies
+	// with an annotated $TOOLEXEC_IMPORTPATH value. Aspects must apply to that variant, too.
+	writeFile("subject/subject_test.go", `package subject
+
+import "testing"
+
+func TestInPackage(t *testing.T) {
+	if got := Value(); got != 42 {
+		t.Fatalf("Value() = %d, want 42", got)
+	}
+	if !Instrumented {
+		t.Fatal("aspects were not applied to the in-package test variant of the package under test")
+	}
+}
+`)
+	writeFile("subject/external_test.go", `package subject_test
+
+import (
+	"testing"
+
+	"example.com/testvariantaspect/helper"
+	"example.com/testvariantaspect/subject"
+)
+
+// instrumented is set by the instrumentation aspect when value is called.
+var instrumented bool
+
+func value() int { return subject.Value() }
+
+func TestExternal(t *testing.T) {
+	if got := subject.Value(); got != 42 {
+		t.Fatalf("subject.Value() = %d, want 42", got)
+	}
+	if !subject.Instrumented {
+		t.Error("aspects were not applied to the test variant imported by the external test package")
+	}
+
+	if got := value(); got != 42 {
+		t.Fatalf("value() = %d, want 42", got)
+	}
+	if !instrumented {
+		t.Error("aspects were not applied to the external test package")
+	}
+
+	if got := helper.Doubled(); got != 84 {
+		t.Fatalf("helper.Doubled() = %d, want 84", got)
+	}
+	if !helper.Instrumented {
+		t.Error("aspects were not applied to the importer Go rebuilt for this test binary")
+	}
+}
+`)
+
+	orchestrion := buildOrchestrion(t)
+	run.exec(t, orchestrion, "go", "test", "-a", "./subject")
+	// Coverage-enabled builds hand the compiler sources rewritten by `go tool cover` instead of the
+	// package's own, which must not prevent aspects from applying either.
+	run.exec(t, orchestrion, "go", "test", "-a", "-coverprofile="+filepath.Join(run.dir, "coverage.out"), "./subject")
 }
 
 func TestBuildFromModuleSubdirectory(t *testing.T) {
@@ -274,9 +630,6 @@ func benchmarkGithub(owner string, repo string, subdir string, build string, tes
 		}
 		// traefik needs a few tweaks in order to build successfully
 		if repo == "traefik" {
-			// it fails to build if we don't upgrade the version go.opentelemetry.io/otel/sdk/log
-			tc.exec(b, "go", "get", "go.opentelemetry.io/otel/sdk/log@latest")
-
 			// it fails to build if ./webui/static does not exist, so just create a folder with mock content
 			webuiPath := filepath.Join(tc.dir, "webui")
 			if stat, err := os.Stat(webuiPath); err == nil && stat.IsDir() {
@@ -359,6 +712,21 @@ func (h *harness) instrumented(b *testing.B) {
 }
 
 func (r *runner) exec(tb testing.TB, name string, args ...string) {
+	r.execWithCache(tb, tb.TempDir(), name, args...)
+}
+
+func (r *runner) execWithCache(tb testing.TB, cache string, name string, args ...string) {
+	cmd := exec.Command(name, args...)
+	cmd.Dir = r.dir
+	cmd.Env = append(os.Environ(), "GOCACHE="+cache)
+	output := bytes.NewBuffer(make([]byte, 0, 4_096))
+	cmd.Stdout = output
+	cmd.Stderr = output
+
+	require.NoError(tb, cmd.Run(), "command failed: %s\n%s", cmd, output)
+}
+
+func (r *runner) execError(tb testing.TB, name string, args ...string) string {
 	cmd := exec.Command(name, args...)
 	cmd.Dir = r.dir
 	cmd.Env = append(os.Environ(), "GOCACHE="+tb.TempDir())
@@ -366,7 +734,8 @@ func (r *runner) exec(tb testing.TB, name string, args ...string) {
 	cmd.Stdout = output
 	cmd.Stderr = output
 
-	require.NoError(tb, cmd.Run(), "command failed: %s\n%s", cmd, output)
+	require.Error(tb, cmd.Run(), "command succeeded unexpectedly: %s\n%s", cmd, output)
+	return output.String()
 }
 
 func (*harness) findLatestGithubReleaseTag(b *testing.B, owner string, repo string) string {
@@ -394,6 +763,26 @@ func (*harness) findLatestGithubReleaseTag(b *testing.B, owner string, repo stri
 	require.NotEmpty(b, payload)
 
 	return payload.TagName
+}
+
+func requireCoverageCountAtLeast(t *testing.T, profilePath string, fileName string, mode string, minimum int) {
+	t.Helper()
+
+	profiles, err := cover.ParseProfiles(profilePath)
+	require.NoError(t, err)
+	for _, profile := range profiles {
+		if filepath.ToSlash(profile.FileName) != fileName {
+			continue
+		}
+		require.Equal(t, mode, profile.Mode)
+		for _, block := range profile.Blocks {
+			if block.Count >= minimum {
+				return
+			}
+		}
+		require.Failf(t, "coverage count is too low", "%s has no block with a count of at least %d: %#v", fileName, minimum, profile.Blocks)
+	}
+	require.Failf(t, "coverage profile is missing a file", "%s does not contain %s", profilePath, fileName)
 }
 
 func getGithubToken() (string, bool) {

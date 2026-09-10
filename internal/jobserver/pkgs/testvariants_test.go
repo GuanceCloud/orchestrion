@@ -6,6 +6,7 @@
 package pkgs
 
 import (
+	"context"
 	"crypto/sha256"
 	"path/filepath"
 	"testing"
@@ -50,6 +51,56 @@ func TestResolveRequestTestVariantHash(t *testing.T) {
 	assert.NotEqual(t, variantHash, changedHash)
 }
 
+func TestResolveRequestReverseVariantSpanTag(t *testing.T) {
+	tags := make(map[string]any)
+	ResolveRequest{
+		Dir:                "/module",
+		Pattern:            "example.com/root",
+		TestVariantFor:     "example.com/subject",
+		ReverseTestVariant: true,
+	}.ForeachSpanTag(func(key string, value any) {
+		tags[key] = value
+	})
+	assert.Equal(t, true, tags["request.reverse-test-variant"])
+}
+
+func TestResolveRequestReverseVariantHash(t *testing.T) {
+	first := ResolveRequest{
+		Dir:     "/module",
+		Env:     []string{envVarReverseVariant + "=/tmp/first.json", envVarReverseVariantFlavor + "=flavor"},
+		Pattern: "example.com/dependency",
+	}
+	second := ResolveRequest{
+		Dir:     "/module",
+		Env:     []string{envVarReverseVariant + "=/tmp/second.json", envVarReverseVariantFlavor + "=flavor"},
+		Pattern: "example.com/dependency",
+	}
+	firstHash, err := first.hash()
+	require.NoError(t, err)
+	secondHash, err := second.hash()
+	require.NoError(t, err)
+	assert.Equal(t, firstHash, secondHash)
+	assert.Equal(t, "/tmp/first.json", first.reverseVariantPath)
+	assert.Equal(t, "flavor", first.ReverseVariantFlavor)
+	assert.ElementsMatch(t, []string{
+		envVarReverseVariant + "=/tmp/first.json",
+		envVarReverseVariantFlavor + "=flavor",
+	}, resolveEnvironment(context.Background(), &first))
+
+	second.Env = []string{envVarReverseVariant + "=/tmp/second.json", envVarReverseVariantFlavor + "=other"}
+	second.canonical = false
+	secondHash, err = second.hash()
+	require.NoError(t, err)
+	assert.NotEqual(t, firstHash, secondHash)
+}
+
+func TestFindPackage(t *testing.T) {
+	ordinary := &packages.Package{ID: "ordinary", PkgPath: "example.com/subject"}
+	variant := &packages.Package{ID: "variant", PkgPath: "example.com/subject", ForTest: "example.com/subject"}
+	assert.Same(t, ordinary, findPackage([]*packages.Package{variant, ordinary}, "example.com/subject"))
+	assert.Nil(t, findPackage([]*packages.Package{variant}, "example.com/subject"))
+}
+
 func TestPackageSourceDirUsesOtherFiles(t *testing.T) {
 	pkg := &packages.Package{OtherFiles: []string{filepath.Join("module", "subject", "subject.swig")}}
 	assert.Equal(t, filepath.Join("module", "subject"), packageSourceDir(pkg))
@@ -87,6 +138,33 @@ func TestInternalImportBridgeRejectsNestedInternalRoot(t *testing.T) {
 	_, _, err := internalImportBridge(root, "example.net/subject", sha256.Sum256([]byte("bridge")))
 	require.Error(t, err)
 	assert.Contains(t, err.Error(), "nested internal")
+}
+
+func TestCollectCoverageVariantClosure(t *testing.T) {
+	const target = "example.com/subject"
+	subject := &packages.Package{ID: target, PkgPath: target, ExportFile: "/subject.a"}
+	unrelated := &packages.Package{ID: "example.com/unrelated", PkgPath: "example.com/unrelated", ExportFile: "/unrelated.a"}
+	middle := &packages.Package{
+		ID:         "example.com/middle",
+		PkgPath:    "example.com/middle",
+		ExportFile: "/middle.a",
+		Imports:    map[string]*packages.Package{target: subject},
+	}
+	root := &packages.Package{
+		ID:         "example.com/root",
+		PkgPath:    "example.com/root",
+		ExportFile: "/root.a",
+		Imports: map[string]*packages.Package{
+			middle.PkgPath:    middle,
+			unrelated.PkgPath: unrelated,
+		},
+	}
+	resp := make(ResolveResponse)
+	require.NoError(t, collectCoverageVariantClosure(resp, root, target, make(map[string]bool)))
+	assert.Equal(t, ResolvedArchive{ExportFile: "/root.a", ForTest: target}, resp[root.PkgPath])
+	assert.Equal(t, ResolvedArchive{ExportFile: "/middle.a", ForTest: target}, resp[middle.PkgPath])
+	assert.NotContains(t, resp, target)
+	assert.NotContains(t, resp, unrelated.PkgPath)
 }
 
 func TestCollectTestVariantClosureRequiresExports(t *testing.T) {
