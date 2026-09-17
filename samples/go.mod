@@ -9,8 +9,8 @@ replace (
 
 require (
 	github.com/99designs/gqlgen v0.17.94
-	github.com/GuanceCloud/orchestrion v1.13.0-ext
-	github.com/GuanceCloud/orchestrion/instrument v1.12.0
+	github.com/GuanceCloud/orchestrion v1.13.1-ext
+	github.com/GuanceCloud/orchestrion/instrument v1.13.1-ext
 	github.com/IBM/sarama v1.60.1
 	github.com/Shopify/sarama v1.38.1
 	github.com/aws/aws-sdk-go v1.55.8
@@ -67,8 +67,8 @@ require (
 	github.com/DataDog/go-tuf v1.1.1-0.5.2 // indirect
 	github.com/DataDog/sketches-go v1.4.8 // indirect
 	github.com/GuanceCloud/dd-trace-go/contrib/99designs/gqlgen/v2 v2.10.3-ext // indirect
-	github.com/GuanceCloud/dd-trace-go/contrib/IBM/sarama/v2 v2.10.3-ext // indirect
-	github.com/GuanceCloud/dd-trace-go/contrib/Shopify/sarama/v2 v2.10.3-ext // indirect
+	github.com/GuanceCloud/dd-trace-go/contrib/IBM/sarama/v2 v2.10.7-ext // indirect
+	github.com/GuanceCloud/dd-trace-go/contrib/Shopify/sarama/v2 v2.10.7-ext // indirect
 	github.com/GuanceCloud/dd-trace-go/contrib/aerospike/aerospike-client-go.v7/v2 v2.10.3-ext // indirect
 	github.com/GuanceCloud/dd-trace-go/contrib/aws/aws-sdk-go-v2/v2 v2.10.3-ext // indirect
 	github.com/GuanceCloud/dd-trace-go/contrib/aws/aws-sdk-go/v2 v2.10.3-ext // indirect
@@ -81,6 +81,7 @@ require (
 	github.com/GuanceCloud/dd-trace-go/contrib/gin-gonic/gin/v2 v2.10.3-ext // indirect
 	github.com/GuanceCloud/dd-trace-go/contrib/go-chi/chi.v5/v2 v2.10.3-ext // indirect
 	github.com/GuanceCloud/dd-trace-go/contrib/go-chi/chi/v2 v2.10.3-ext // indirect
+	github.com/GuanceCloud/dd-trace-go/contrib/go-kratos/kratos.v3/v2 v2.10.6-ext // indirect
 	github.com/GuanceCloud/dd-trace-go/contrib/go-redis/redis.v7/v2 v2.10.3-ext // indirect
 	github.com/GuanceCloud/dd-trace-go/contrib/go-redis/redis.v8/v2 v2.10.3-ext // indirect
 	github.com/GuanceCloud/dd-trace-go/contrib/go-redis/redis/v2 v2.10.3-ext // indirect
@@ -111,8 +112,8 @@ require (
 	github.com/GuanceCloud/dd-trace-go/contrib/twmb/franz-go/v2 v2.10.3-ext // indirect
 	github.com/GuanceCloud/dd-trace-go/contrib/valkey-io/valkey-go/v2 v2.10.3-ext // indirect
 	github.com/GuanceCloud/dd-trace-go/contrib/valyala/fasthttp/v2 v2.10.3-ext // indirect
-	github.com/GuanceCloud/dd-trace-go/orchestrion/all/v2 v2.10.3-ext // indirect
-	github.com/GuanceCloud/dd-trace-go/v2 v2.10.4-ext // indirect
+	github.com/GuanceCloud/dd-trace-go/orchestrion/all/v2 v2.10.7-ext // indirect
+	github.com/GuanceCloud/dd-trace-go/v2 v2.10.7-ext // indirect
 	github.com/Microsoft/go-winio v0.6.2 // indirect
 	github.com/aerospike/aerospike-client-go/v7 v7.10.2 // indirect
 	github.com/agnivade/levenshtein v1.2.1 // indirect
@@ -170,9 +171,11 @@ require (
 	github.com/gin-contrib/sse v1.1.1 // indirect
 	github.com/go-chi/chi v1.5.5 // indirect
 	github.com/go-jose/go-jose/v4 v4.1.4 // indirect
+	github.com/go-kratos/kratos/v3 v3.0.0 // indirect
 	github.com/go-logr/logr v1.4.4 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-ole/go-ole v1.3.0 // indirect
+	github.com/go-playground/form/v4 v4.3.0 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
 	github.com/go-playground/validator/v10 v10.30.3 // indirect
@@ -187,6 +190,7 @@ require (
 	github.com/googleapis/enterprise-certificate-proxy v0.3.21 // indirect
 	github.com/googleapis/gax-go/v2 v2.23.0 // indirect
 	github.com/gorilla/mux v1.8.1 // indirect
+	github.com/gorilla/websocket v1.5.4-0.20250319132907-e064f32e3674 // indirect
 	github.com/graph-gophers/graphql-go v1.10.2 // indirect
 	github.com/graphql-go/graphql v0.8.1 // indirect
 	github.com/hailocab/go-hostpool v0.0.0-20160125115350-e80d13ce29ed // indirect

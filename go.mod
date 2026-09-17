@@ -3,7 +3,7 @@ module github.com/GuanceCloud/orchestrion
 go 1.25.0
 
 require (
-	github.com/GuanceCloud/dd-trace-go/v2 v2.10.4-ext
+	github.com/GuanceCloud/dd-trace-go/v2 v2.10.7-ext
 	github.com/blakesmith/ar v0.0.0-20190502131153-809d4375e1fb
 	github.com/charmbracelet/lipgloss v1.1.0
 	github.com/dave/dst v0.27.4
