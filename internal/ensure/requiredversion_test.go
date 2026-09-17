@@ -30,13 +30,13 @@ func TestGoModVersion(t *testing.T) {
 	}
 
 	for name, test := range map[string]test{
-		"happy":    {version: "v1.11.1-ext"},
-		"replaced": {version: "v1.11.1-ext", replace: true},
+		"happy":    {version: "v1.13.0-ext"},
+		"replaced": {version: "v1.13.0-ext", replace: true},
 		"missing":  {err: fmt.Errorf("no required module provides package %s", orchestrionPkgPath)},
 	} {
 		t.Run(name, func(t *testing.T) {
 			if !test.replace && test.version != "" && semver.Compare(test.version, version.Tag()) >= 0 {
-					// Tests without replace cannot resolve a version that has not been released yet.
+				// Tests without replace cannot resolve a version that has not been released yet.
 				t.Skipf("Skipping test because version %s is newer than the current version (%s)", test.version, version.Tag())
 			}
 
