@@ -26,6 +26,40 @@ const FilenameOrchestrionToolGo = "orchestrion.tool.go"
 
 var ErrInvalidGoPackage = errors.New("no .go files in package")
 
+// isNoGoFilesError reports whether e is the (poorly-typed) error emitted by
+// [packages.Load] when a package's directory has no Go files at all -- as
+// opposed to the package failing to resolve in the first place.
+func isNoGoFilesError(e packages.Error) bool {
+	return e.Kind == packages.ListError && strings.Contains(e.Msg, "no Go files in")
+}
+
+// unresolvedError returns a non-nil error if pkg.Errors indicates the package
+// could not be resolved at all (module not found, a `replace` directive
+// pointing at a missing directory, an unreachable proxy, inconsistent
+// vendoring, ...), as opposed to resolving to an empty, Go-file-less
+// directory. A resolution failure must never be mistaken for evidence that the
+// package lacks configuration.
+func unresolvedError(pkg *packages.Package) error {
+	var errs []error
+	for _, e := range pkg.Errors {
+		if isNoGoFilesError(e) {
+			continue
+		}
+		errs = append(errs, e)
+	}
+	if len(errs) == 0 {
+		return nil
+	}
+	return fmt.Errorf("resolving %q: %w", pkg.PkgPath, errors.Join(errs...))
+}
+
+// ErrInvalidConfig indicates that a package's [FilenameOrchestrionToolGo] or
+// [FilenameOrchestrionYML] file was found and opened, but its contents are
+// genuinely malformed (bad syntax, or fails JSON-schema validation) -- as
+// opposed to the package, or one of its transitive imports, simply failing to
+// resolve.
+var ErrInvalidConfig = errors.New("invalid orchestrion configuration")
+
 // loadGoPackage loads configuration from the specified go package.
 func (l *Loader) loadGoPackage(ctx context.Context, pkg *packages.Package) (_ *configGo, err error) {
 	// Special-case the `github.com/GuanceCloud/orchestrion` package, we need not
@@ -48,7 +82,7 @@ func (l *Loader) loadGoPackage(ctx context.Context, pkg *packages.Package) (_ *c
 			var err error
 			for _, e := range pkg.Errors {
 				var innerErr error = e
-				if e.Kind == packages.ListError && strings.Contains(e.Msg, "no Go files in") { // Workaround poor error typing in packages.Load
+				if isNoGoFilesError(e) {
 					innerErr = fmt.Errorf("no Go files found, was expecting at least orchestrion.tool.go: %w", e)
 				}
 				err = errors.Join(err, innerErr)
@@ -98,17 +132,17 @@ func (l *Loader) loadGoFile(ctx context.Context, filename string) (_ []Config, e
 	fset := token.NewFileSet()
 	ast, err := parser.ParseFile(fset, filename, file, parser.ImportsOnly)
 	if err != nil {
-		return nil, fmt.Errorf("parsing %q: %w", filename, err)
+		return nil, fmt.Errorf("%w: parsing %q: %w", ErrInvalidConfig, filename, err)
 	}
 
 	imports := make([]string, 0, len(ast.Imports))
 	for _, spec := range ast.Imports {
 		if spec.Path == nil {
-			return nil, fmt.Errorf("missing import path at %s", fset.Position(spec.Pos()))
+			return nil, fmt.Errorf("%w: missing import path at %s", ErrInvalidConfig, fset.Position(spec.Pos()))
 		}
 		path, err := strconv.Unquote(spec.Path.Value)
 		if err != nil {
-			return nil, fmt.Errorf("invalid import path at %q", fset.Position(spec.Pos()))
+			return nil, fmt.Errorf("%w: invalid import path at %q", ErrInvalidConfig, fset.Position(spec.Pos()))
 		}
 		imports = append(imports, path)
 	}
