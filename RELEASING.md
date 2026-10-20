@@ -36,4 +36,31 @@
       - Remove `chore:` entries
       - Fix any typos you notice
 1. Once validated, publish the release on GitHub
-   - This automatically creates the release tag, so you're done!
+   - Publishing creates the root release tag. Confirm that the `Tag Release` job also succeeds so
+     nested modules are tagged at the same commit. See the recovery instructions below if it fails.
+
+## Release tag recovery
+
+Publishing a GitHub release creates its root tag. The `Tag Release` job then creates annotated tags for
+publishable nested modules at the same commit, using the workflow `GITHUB_TOKEN` with
+`contents: write` permission in `GuanceCloud/orchestrion`.
+
+If nested-module tagging fails, repair the published release using the reviewed workflow on `main`:
+
+```console
+gh workflow run release.yml --repo GuanceCloud/orchestrion --ref main -f tag=v1.14.0-ext
+```
+
+Replace `v1.14.0-ext` with the published root release tag. The job rejects drafts, skips existing tags that
+resolve to the correct commit, and fails on conflicting tags without moving them. It reads module
+metadata from the root tag's commit, not from the current `main` checkout. After the job finishes,
+verify the nested tags and check that the Go module proxy resolves them; cached misses can delay
+proxy availability.
+
+A release event uses the workflow revision associated with that release. Merging an automation fix
+into `main` does not update an already-cut release's workflow. Use the manual recovery command for
+such releases rather than moving the published root tag.
+
+If tag creation fails with `GH013`, ask a repository administrator to verify that the release
+workflow is authorized by the repository's tag-protection rules. Do not move an existing tag to
+work around a publication failure.
